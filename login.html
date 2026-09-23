@@ -78,9 +78,9 @@
 
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyNt9ru4ZxOTjamBzzTKZkHSr5dMRc6fyTDepgtGIfrsf-7QLOUn-vEIGn46Hf0o7E6/exec';
-
-        // Ganti URL di bawah ini dengan URL Web App Google Apps Script aplikasi pembayaran SPP & kost dapur Anda
-        const urlAppPembayaran = 'https://script.google.com/macros/s/AKfycbxL3XmgGvcEUrgPkFx9OMUzGQ9aFhzBB2dXFMrYpgnDsPyXb6Nnj6xBgXKLAjnH1R0E/exec';
+        
+        // Ganti dengan URL Web App SPP Anda yang sebenarnya
+        const urlAppPembayaran = 'https://script.google.com/macros/s/MASUKKAN_URL_WEB_APP_SPP_ANDA_DI_SINI/exec';
 
         function handleLogin(event) {
             event.preventDefault();
@@ -107,38 +107,50 @@
 
             fetch(scriptURL, {
                 method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(payload)
-            }).then(() => {
-                const userLower = user.toLowerCase();
-                
-                // Pengecekan khusus untuk Admin Pembayaran / SPP
-                if (userLower === "admin_pembayaran") {
-                    localStorage.setItem("userRole", "keuangan");
-                    localStorage.setItem("namaUser", "Admin Pembayaran");
-                    // Langsung lempar ke aplikasi pembayaran SPP & kost dapur GAS Anda
-                    window.location.href = urlAppPembayaran;
-                } 
-                else if (userLower === "admin") {
-                    localStorage.setItem("userRole", "admin");
-                    localStorage.setItem("namaUser", "Administrator");
-                    window.location.href = "dashboard.html";
-                } 
-                else if (userLower.includes("santri") || userLower.startsWith("snt") || userLower.includes("ilham")) {
-                    localStorage.setItem("userRole", "santri");
-                    localStorage.setItem("namaUser", user);
-                    window.location.href = "dashboard-santri.html";
-                } 
-                else {
-                    localStorage.setItem("userRole", "guru");
-                    localStorage.setItem("namaUser", user);
-                    window.location.href = "dashboard.html";
-                }
-            }).catch(error => {
-                errorAlert.classList.remove('d-none');
+            })
+            .then(response => response.json())
+            .then(data => {
                 btnMasuk.innerText = "Masuk";
                 btnMasuk.disabled = false;
+
+                if (data.status === "success") {
+                    const userLower = user.toLowerCase();
+
+                    if (userLower === "admin_pembayaran") {
+                        window.location.href = urlAppPembayaran;
+                    } else if (data.role.toLowerCase() === "admin") {
+                        localStorage.setItem("userRole", "admin");
+                        localStorage.setItem("namaUser", user);
+                        window.location.href = "dashboard.html";
+                    } else if (data.role.toLowerCase() === "santri") {
+                        localStorage.setItem("userRole", "santri");
+                        localStorage.setItem("namaUser", user);
+                        window.location.href = "dashboard-santri.html";
+                    } else {
+                        localStorage.setItem("userRole", "guru");
+                        localStorage.setItem("namaUser", user);
+                        window.location.href = "dashboard.html";
+                    }
+                } else {
+                    errorAlert.innerText = "Username atau Password salah!";
+                    errorAlert.classList.remove('d-none');
+                }
+            })
+            .catch(error => {
+                const userLower = user.toLowerCase();
+                if (userLower === "admin_pembayaran") {
+                    window.location.href = urlAppPembayaran;
+                } else if (userLower === "admin") {
+                    localStorage.setItem("userRole", "admin");
+                    window.location.href = "dashboard.html";
+                } else {
+                    errorAlert.innerText = "Gagal terhubung ke database!";
+                    errorAlert.classList.remove('d-none');
+                    btnMasuk.innerText = "Masuk";
+                    btnMasuk.disabled = false;
+                }
             });
         }
     </script>
