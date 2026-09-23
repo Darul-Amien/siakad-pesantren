@@ -14,29 +14,59 @@
                 <div class="card shadow-lg border-0 rounded-4">
                     <div class="card-body p-5">
                         <h3 class="text-center mb-4 text-primary fw-bold">Login SIAKAD</h3>
-                        <form>
+                        
+                        <!-- Form Login -->
+                        <form id="loginForm" onsubmit="handleLogin(event)">
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username / NIS / NIP</label>
-                                <input type="text" class="form-label form-control p-2" id="username" placeholder="Masukkan username Anda" required>
+                                <input type="text" class="form-control p-2" id="username" placeholder="Masukkan username Anda" required>
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
                                 <input type="password" class="form-control p-2" id="password" placeholder="Masukkan password" required>
                             </div>
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="remember">
-                                <label class="form-check-label text-muted" for="remember">Ingat Saya</label>
+                            
+                            <!-- Tempat Pesan Error jika salah -->
+                            <div id="errorAlert" class="alert alert-danger d-none py-2" role="alert">
+                                Username atau Password salah!
                             </div>
-                            <div class="d-grid gap-2">
+
+                            <div class="d-grid gap-2 mt-4">
                                 <button type="submit" class="btn btn-primary btn-lg">Masuk</button>
                                 <a href="index.html" class="btn btn-outline-secondary">Kembali ke Beranda</a>
                             </div>
                         </form>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Script JavaScript untuk Cek Login -->
+    <script>
+        function handleLogin(event) {
+            // Mencegah form agar tidak reload halaman secara otomatis
+            event.preventDefault();
+
+            // Mengambil nilai yang diketik pengguna
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const errorAlert = document.getElementById('errorAlert');
+
+            // CONTOH DATA LOGIN SEDERHANA
+            // Nanti bagian ini bisa diganti dengan pengecekan ke Google Sheets / Database
+            if (user === "admin" && pass === "12345") {
+                alert("Login Berhasil! Selamat datang Admin.");
+                // Di sini nanti bisa diarahkan ke halaman dashboard, contoh: window.location.href = "dashboard.html";
+            } else if (user === "guru" && pass === "guru123") {
+                alert("Login Berhasil! Selamat datang Guru.");
+            } else {
+                // Jika salah, tampilkan pesan error
+                errorAlert.classList.remove('d-none');
+            }
+        }
+    </script>
 
 </body>
 </html>
