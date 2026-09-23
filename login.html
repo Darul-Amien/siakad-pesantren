@@ -15,7 +15,6 @@
                     <div class="card-body p-5">
                         <h3 class="text-center mb-4 text-primary fw-bold">Login SIAKAD</h3>
                         
-                        <!-- Form Login -->
                         <form id="loginForm" onsubmit="handleLogin(event)">
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username / NIS / NIP</label>
@@ -26,7 +25,6 @@
                                 <input type="password" class="form-control p-2" id="password" placeholder="Masukkan password" required>
                             </div>
                             
-                            <!-- Tempat Pesan Error jika salah -->
                             <div id="errorAlert" class="alert alert-danger d-none py-2" role="alert">
                                 Username atau Password salah!
                             </div>
@@ -43,26 +41,22 @@
         </div>
     </div>
 
-    <!-- Script JavaScript untuk Cek Login -->
     <script>
         function handleLogin(event) {
-            // Mencegah form agar tidak reload halaman secara otomatis
             event.preventDefault();
 
-            // Mengambil nilai yang diketik pengguna
             const user = document.getElementById('username').value;
             const pass = document.getElementById('password').value;
             const errorAlert = document.getElementById('errorAlert');
 
-            // CONTOH DATA LOGIN SEDERHANA
-            // Nanti bagian ini bisa diganti dengan pengecekan ke Google Sheets / Database
             if (user === "admin" && pass === "12345") {
                 alert("Login Berhasil! Selamat datang Admin.");
-                // Di sini nanti bisa diarahkan ke halaman dashboard, contoh: window.location.href = "dashboard.html";
+                // Nanti kita buat file dashboard.html, untuk sekarang akan mengarah ke sana
+                window.location.href = "dashboard.html"; 
             } else if (user === "guru" && pass === "guru123") {
                 alert("Login Berhasil! Selamat datang Guru.");
+                window.location.href = "dashboard.html";
             } else {
-                // Jika salah, tampilkan pesan error
                 errorAlert.classList.remove('d-none');
             }
         }
