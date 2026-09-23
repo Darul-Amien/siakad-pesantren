@@ -14,7 +14,7 @@
         <div class="container-fluid">
             <a class="navbar-brand fw-bold" href="#"><i class="fas fa-graduation-cap me-2"></i>SIAKAD Pesantren</a>
             <div class="d-flex align-items-center text-white">
-                <span id="welcomeText" class="me-3 fw-semibold"></span>
+                <span id="welcomeText" class="me-3 fw-semibold">Halo</span>
                 <a href="login.html" class="btn btn-outline-light btn-sm" onclick="localStorage.clear()"><i class="fas fa-sign-out-alt me-1"></i>Keluar</a>
             </div>
         </div>
@@ -86,7 +86,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Menu Pengelolaan Data (Hanya muncul jika Admin yang login) -->
+            <!-- Menu Pengelolaan Data (Hanya untuk Admin) -->
             <div class="col-md-6" id="menuAdminOnly">
                 <div class="card border-0 shadow-sm rounded-4 h-100">
                     <div class="card-body p-4">
@@ -102,8 +102,7 @@
     <!-- Script Pengatur Tampilan Berdasarkan Role -->
     <script>
         const role = localStorage.getItem("userRole");
-        const nama = localStorage.getItem("namaUser");
-
+        
         if (role === "admin") {
             document.getElementById("welcomeText").innerText = "Halo, Admin";
             document.getElementById("greetingTitle").innerText = "Selamat Datang, Administrator!";
@@ -112,11 +111,13 @@
             document.getElementById("greetingTitle").innerText = "Selamat Datang, Bapak/Ibu Guru!";
             document.getElementById("greetingDesc").innerText = "Panel khusus pengajar — Silakan input nilai dan pantau absensi kelas Anda.";
             
-            // Sembunyikan statistik total siswa & menu konfigurasi khusus admin
-            document.getElementById("adminStats").style.display = "none";
-            document.getElementById("menuAdminOnly").style.display = "none";
+            // Sembunyikan statistik dan menu admin
+            const stats = document.getElementById("adminStats");
+            const menuAdmin = document.getElementById("menuAdminOnly");
+            if (stats) stats.style.display = "none";
+            if (menuAdmin) menuAdmin.style.display = "none";
         } else {
-            // Jika belum login langsung tembak ke halaman login
+            // Jika belum login, kembalikan ke halaman login
             window.location.href = "login.html";
         }
     </script>
