@@ -1,46 +1,6 @@
 <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyNt9ru4ZxOTjamBzzTKZkHSr5dMRc6fyTDepgtGIfrsf-7QLOUn-vEIGn46Hf0o7E6/exec';
 
-        // Panggil fungsi muat data saat halaman pertama kali dibuka
-        window.onload = function() {
-            loadUsers();
-        };
-
-        // Fungsi untuk mengambil dan menampilkan daftar pengguna
-        function loadUsers() {
-            const tableBody = document.getElementById('userTableBody');
-            tableBody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3">Memuat data dari database...</td></tr>`;
-
-            // Karena menggunakan mode 'no-cors' pada POST, cara terbaik mengambil data adalah via doGet atau fetch khusus
-            // Alternatif ringan: Kita ambil data menggunakan script pemanggil jika backend mendukung doGet
-            fetch(scriptURL + "?action=get")
-                .then(response => response.json())
-                .then(data => {
-                    tableBody.innerHTML = "";
-                    if (data.length === 0) {
-                        tableBody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3">Belum ada pengguna terdaftar.</td></tr>`;
-                        return;
-                    }
-
-                    data.forEach(user => {
-                        let row = `<tr>
-                            <td>${user.username}</td>
-                            <td>${user.nama}</td>
-                            <td><span class="badge bg-secondary">${user.role}</span></td>
-                            <td class="text-center">
-                                <button class="btn btn-danger btn-sm" onclick="hapusUser('${user.username}')">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </td>
-                        </tr>`;
-                        tableBody.innerHTML += row;
-                    });
-                })
-                .catch(error => {
-                    tableBody.innerHTML = `<tr><td colspan="4" class="text-center text-danger py-3">Gagal memuat data. Periksa koneksi atau URL script.</td></tr>`;
-                });
-        }
-
         // Fungsi Tambah Pengguna (Register)
         function submitData(event) {
             event.preventDefault();
@@ -65,11 +25,10 @@
                 body: JSON.stringify(formData)
             })
             .then(() => {
-                statusMsg.innerHTML = `<div class="alert alert-success py-2 small">Berhasil! Pengguna baru ditambahkan.</div>`;
+                statusMsg.innerHTML = `<div class="alert alert-success py-2 small">Berhasil! Pengguna baru ditambahkan ke database.</div>`;
                 document.getElementById('userForm').reset();
                 btnSimpan.innerText = "Simpan ke Database";
                 btnSimpan.disabled = false;
-                setTimeout(loadUsers, 1500); // Muat ulang tabel otomatis
             })
             .catch(error => {
                 statusMsg.innerHTML = `<div class="alert alert-danger py-2 small">Gagal menyimpan: ${error}</div>`;
@@ -80,7 +39,7 @@
 
         // Fungsi Hapus Pengguna (Delete)
         function hapusUser(username) {
-            if (!confirm("Apakah Anda yakin ingin menghapus akun: " + username + "?")) {
+            if (!confirm("Apakah Anda yakin ingin menghapus akun dengan username: " + username + "?")) {
                 return;
             }
 
@@ -97,7 +56,6 @@
             })
             .then(() => {
                 alert("Perintah hapus dikirim untuk username: " + username);
-                setTimeout(loadUsers, 1500); // Muat ulang tabel otomatis
             })
             .catch(error => {
                 alert("Terjadi kesalahan saat menghapus: " + error);
