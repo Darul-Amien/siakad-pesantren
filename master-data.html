@@ -1,7 +1,93 @@
-<script>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Sistem - Pendaftaran Pengguna</title>
+    <!-- Google Fonts Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .bg-custom-green {
+            background-color: #198754 !important;
+        }
+        .btn-custom-green {
+            background-color: #198754 !important;
+            border-color: #198754 !important;
+            color: white !important;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+        .btn-custom-green:hover {
+            background-color: #157347 !important;
+            border-color: #146c43 !important;
+        }
+        .card {
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-dark bg-custom-green shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold text-white" href="dashboard.html"><i class="fas fa-arrow-left me-2"></i>Kembali ke Dashboard</a>
+        </div>
+    </nav>
+
+    <!-- Konten Form -->
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-7">
+                <div class="card border-0 shadow-sm rounded-4 p-4">
+                    <h3 class="fw-bold text-success mb-3"><i class="fas fa-user-plus me-2"></i>Tambah Pengguna Baru</h3>
+                    <p class="text-muted mb-4">Daftarkan akun guru, santri, atau admin baru agar bisa masuk ke sistem SIAKAD Pondok Pesantren Darul Amien.</p>
+
+                    <form id="userForm" onsubmit="submitData(event)">
+                        <div class="mb-3">
+                            <label class="form-label small fw-medium">Nama Lengkap</label>
+                            <input type="text" class="form-control p-2" id="nama" placeholder="Contoh: Muhammad Ilham" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-medium">Username / NIS / NIP</label>
+                            <input type="text" class="form-control p-2" id="username" placeholder="Contoh: santri01 atau guru02" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-medium">Password</label>
+                            <input type="password" class="form-control p-2" id="password" placeholder="Masukkan password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-medium">Sebagai (Role)</label>
+                            <select class="form-select p-2" id="role" required>
+                                <option value="guru">Guru / Pengajar</option>
+                                <option value="santri">Santri / Siswa</option>
+                                <option value="admin">Administrator</option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-custom-green btn-lg py-2" id="btnSimpan">
+                                <i class="fas fa-save me-1"></i> Simpan ke Database
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div id="statusMsg" class="mt-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Kirim Data ke Google Apps Script -->
+    <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyNt9ru4ZxOTjamBzzTKZkHSr5dMRc6fyTDepgtGIfrsf-7QLOUn-vEIGn46Hf0o7E6/exec';
 
-        // Fungsi Tambah Pengguna (Register)
         function submitData(event) {
             event.preventDefault();
             const btnSimpan = document.getElementById('btnSimpan');
@@ -25,7 +111,7 @@
                 body: JSON.stringify(formData)
             })
             .then(() => {
-                statusMsg.innerHTML = `<div class="alert alert-success py-2 small">Berhasil! Pengguna baru ditambahkan ke database.</div>`;
+                statusMsg.innerHTML = `<div class="alert alert-success py-2 small">Berhasil! Pengguna baru telah ditambahkan ke database.</div>`;
                 document.getElementById('userForm').reset();
                 btnSimpan.innerText = "Simpan ke Database";
                 btnSimpan.disabled = false;
@@ -36,29 +122,8 @@
                 btnSimpan.disabled = false;
             });
         }
-
-        // Fungsi Hapus Pengguna (Delete)
-        function hapusUser(username) {
-            if (!confirm("Apakah Anda yakin ingin menghapus akun dengan username: " + username + "?")) {
-                return;
-            }
-
-            const deleteData = {
-                action: "delete",
-                username: username
-            };
-
-            fetch(scriptURL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(deleteData)
-            })
-            .then(() => {
-                alert("Perintah hapus dikirim untuk username: " + username);
-            })
-            .catch(error => {
-                alert("Terjadi kesalahan saat menghapus: " + error);
-            });
-        }
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
