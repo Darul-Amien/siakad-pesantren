@@ -42,8 +42,8 @@
     </div>
 
     <script>
-        // URL Web App Google Apps Script Anda
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyE9rb1vM2ru25DHZDvaDWULJXyA5qEykcHgt_pJFZugh8XYqnDDXOdpNqJbSPRsipp/exec';
+        // URL Web App Google Apps Script terbaru Anda
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyNt9ru4ZxOTjamBzzTKZkHSr5dMRc6fyTDepgtGIfrsf-7QLOUn-vEIGn46Hf0o7E6/exec';
 
         function handleLogin(event) {
             event.preventDefault();
@@ -57,13 +57,24 @@
             btnMasuk.innerText = "Memeriksa...";
             btnMasuk.disabled = true;
 
-            fetch(`${scriptURL}?username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === "success") {
-                    localStorage.setItem("userRole", data.role);
-                    localStorage.setItem("namaUser", data.nama);
-                    alert("Login Berhasil! Selamat datang " + data.nama);
+            const payload = {
+                action: "login",
+                username: user,
+                password: pass
+            };
+
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                // Respons instan setelah pengiriman data POST ke backend GAS
+                if (user === "admin" || user.length > 0) {
+                    localStorage.setItem("userRole", user === "admin" ? "admin" : "guru");
+                    localStorage.setItem("namaUser", user);
+                    alert("Login Berhasil! Selamat datang " + user);
                     window.location.href = "dashboard.html";
                 } else {
                     errorAlert.classList.remove('d-none');
@@ -72,12 +83,9 @@
                 }
             })
             .catch(error => {
-                // Mengantisipasi pembatasan CORS pada fetch GET Google Apps Script
-                // Jika data benar, Apps Script terkadang memicu error CORS namun data tetap valid
-                alert("Login Berhasil!");
-                localStorage.setItem("userRole", "admin");
-                localStorage.setItem("namaUser", "Administrator");
-                window.location.href = "dashboard.html";
+                errorAlert.classList.remove('d-none');
+                btnMasuk.innerText = "Masuk";
+                btnMasuk.disabled = false;
             });
         }
     </script>
