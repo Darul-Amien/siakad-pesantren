@@ -13,8 +13,9 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
         <div class="container-fluid">
             <a class="navbar-brand fw-bold" href="#"><i class="fas fa-graduation-cap me-2"></i>SIAKAD Pesantren</a>
-            <div class="d-flex">
-                <a href="login.html" class="btn btn-outline-light btn-sm"><i class="fas fa-sign-out-alt me-1"></i>Keluar</a>
+            <div class="d-flex align-items-center text-white">
+                <span id="welcomeText" class="me-3 fw-semibold"></span>
+                <a href="login.html" class="btn btn-outline-light btn-sm" onclick="localStorage.clear()"><i class="fas fa-sign-out-alt me-1"></i>Keluar</a>
             </div>
         </div>
     </nav>
@@ -25,14 +26,14 @@
         <div class="row mb-4">
             <div class="col-12">
                 <div class="p-4 bg-white rounded-4 shadow-sm border-start border-primary border-4">
-                    <h2 class="fw-bold text-dark">Selamat Datang di Panel Dashboard!</h2>
-                    <p class="text-muted mb-0">Sistem Informasi Akademik Pesantren — Kelola data akademik dengan mudah dan efisien.</p>
+                    <h2 class="fw-bold text-dark" id="greetingTitle">Selamat Datang di Panel Dashboard!</h2>
+                    <p class="text-muted mb-0" id="greetingDesc">Sistem Informasi Akademik Pesantren — Kelola data akademik dengan mudah dan efisien.</p>
                 </div>
             </div>
         </div>
 
-        <!-- Kartu Statistik Singkat -->
-        <div class="row g-4 mb-4">
+        <!-- Kartu Statistik (Hanya untuk Admin) -->
+        <div class="row g-4 mb-4" id="adminStats">
             <div class="col-md-4">
                 <div class="card border-0 shadow-sm rounded-4 bg-primary text-white">
                     <div class="card-body p-4">
@@ -81,21 +82,44 @@
                     <div class="card-body p-4">
                         <h5 class="fw-bold text-primary mb-3"><i class="fas fa-book-open me-2"></i>Manajemen Akademik</h5>
                         <p class="text-muted">Kelola data nilai ujian, rekap absensi harian, dan rapor santri.</p>
-                        <a href="#" class="btn btn-outline-primary btn-sm">Kelola Nilai</a>
+                        <a href="#" class="btn btn-outline-primary btn-sm">Buka Menu Nilai</a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <!-- Menu Pengelolaan Data (Hanya muncul jika Admin yang login) -->
+            <div class="col-md-6" id="menuAdminOnly">
                 <div class="card border-0 shadow-sm rounded-4 h-100">
                     <div class="card-body p-4">
-                        <h5 class="fw-bold text-success mb-3"><i class="fas fa-users-cog me-2"></i>Data Pengguna</h5>
-                        <p class="text-muted">Tambah, ubah, atau perbarui data master siswa dan pengajar.</p>
-                        <a href="#" class="btn btn-outline-success btn-sm">Kelola Data</a>
+                        <h5 class="fw-bold text-success mb-3"><i class="fas fa-users-cog me-2"></i>Konfigurasi & Data Master</h5>
+                        <p class="text-muted">Tambah akun guru baru, atur kelas, dan kelola data master sekolah.</p>
+                        <a href="#" class="btn btn-outline-success btn-sm">Kelola Sistem</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Script Pengatur Tampilan Berdasarkan Role -->
+    <script>
+        const role = localStorage.getItem("userRole");
+        const nama = localStorage.getItem("namaUser");
+
+        if (role === "admin") {
+            document.getElementById("welcomeText").innerText = "Halo, Admin";
+            document.getElementById("greetingTitle").innerText = "Selamat Datang, Administrator!";
+        } else if (role === "guru") {
+            document.getElementById("welcomeText").innerText = "Halo, Guru";
+            document.getElementById("greetingTitle").innerText = "Selamat Datang, Bapak/Ibu Guru!";
+            document.getElementById("greetingDesc").innerText = "Panel khusus pengajar — Silakan input nilai dan pantau absensi kelas Anda.";
+            
+            // Sembunyikan statistik total siswa & menu konfigurasi khusus admin
+            document.getElementById("adminStats").style.display = "none";
+            document.getElementById("menuAdminOnly").style.display = "none";
+        } else {
+            // Jika belum login langsung tembak ke halaman login
+            window.location.href = "login.html";
+        }
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
