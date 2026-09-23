@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Santri - Pondok Pesantren Darul Amien</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Nuansa Hijau Khas Pesantren */
+        .bg-custom-green {
+            background-color: #198754 !important;
+        }
+        .text-custom-green {
+            color: #198754 !important;
+        }
+        .border-custom-green {
+            border-color: #198754 !important;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+    <!-- Navbar Atas -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-custom-green shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="#"><i class="fas fa-mosque me-2"></i>SIAKAD Darul Amien</a>
+            <div class="d-flex align-items-center text-white">
+                <span id="welcomeText" class="me-3 fw-semibold">Halo, Santri</span>
+                <a href="login.html" class="btn btn-outline-light btn-sm" onclick="localStorage.clear()"><i class="fas fa-sign-out-alt me-1"></i>Keluar</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Konten Utama Dashboard Santri -->
+    <div class="container my-5">
+        <!-- Sambutan & Identitas Pesantren -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="p-4 bg-white rounded-4 shadow-sm border-start border-custom-green border-4">
+                    <span class="badge bg-success mb-2 px-3 py-2 rounded-pill">Pondok Pesantren Darul Amien</span>
+                    <h2 class="fw-bold text-dark" id="greetingTitle">Selamat Datang, Santri!</h2>
+                    <p class="text-muted mb-0">Portal akademik santri — Pantau nilai ujian, rekap kehadiran, dan perkembangan belajar Anda di pesantren.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kartu Informasi / Menu Santri -->
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold text-custom-green mb-3"><i class="fas fa-file-alt me-2"></i>Nilai & Hasil Ujian</h5>
+                        <p class="text-muted">Lihat daftar nilai ujian semester dan hasil evaluasi belajar harian Anda.</p>
+                        <button class="btn btn-outline-success btn-sm" onclick="alert('Fitur nilai akan segera hadir!')">Lihat Nilai</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold text-custom-green mb-3"><i class="fas fa-calendar-check me-2"></i>Rekap Kehadiran</h5>
+                        <p class="text-muted">Cek catatan kehadiran harian serta kegiatan asrama dan sekolah.</p>
+                        <button class="btn btn-outline-success btn-sm" onclick="alert('Fitur absensi akan segera hadir!')">Cek Absensi</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Pengatur Nama Santri dari LocalStorage -->
+    <script>
+        const role = localStorage.getItem("userRole");
+        const namaUser = localStorage.getItem("namaUser");
+
+        if (role === "santri") {
+            if (namaUser) {
+                document.getElementById("welcomeText").innerText = "Halo, " + namaUser;
+                document.getElementById("greetingTitle").innerText = "Selamat Datang, " + namaUser + "!";
+            }
+        } else if (!role) {
+            // Jika belum login, arahkan kembali ke halaman login
+            window.location.href = "login.html";
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
