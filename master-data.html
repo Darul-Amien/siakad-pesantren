@@ -10,9 +10,9 @@
 <body class="bg-light">
 
     <!-- Navbar -->
-    <nav class="navbar navbar-dark bg-primary shadow-sm">
+    <nav class="navbar navbar-dark bg-success shadow-sm">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="dashboard.html"><i class="fas fa-arrow-left me-2"></i>Kembali ke Dashboard</a>
+            <a class="navbar-brand fw-bold text-white" href="dashboard.html"><i class="fas fa-arrow-left me-2"></i>Kembali ke Dashboard</a>
         </div>
     </nav>
 
@@ -21,17 +21,17 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm rounded-4 p-4">
-                    <h3 class="fw-bold text-primary mb-3"><i class="fas fa-user-plus me-2"></i>Tambah Pengguna Baru</h3>
-                    <p class="text-muted mb-4">Daftarkan akun guru atau santri baru agar bisa masuk ke sistem SIAKAD.</p>
+                    <h3 class="fw-bold text-success mb-3"><i class="fas fa-user-plus me-2"></i>Tambah Pengguna Baru</h3>
+                    <p class="text-muted mb-4">Daftarkan akun guru, santri, atau admin baru agar bisa masuk ke sistem SIAKAD Pondok Pesantren Darul Amien.</p>
 
                     <form id="userForm" onsubmit="submitData(event)">
                         <div class="mb-3">
                             <label class="form-label">Nama Lengkap</label>
-                            <input type="text" class="form-control" id="nama" placeholder="Contoh: Ust. Ahmad" required>
+                            <input type="text" class="form-control" id="nama" placeholder="Contoh: Muhammad Ilham" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Username / NIS / NIP</label>
-                            <input type="text" class="form-control" id="username" placeholder="Contoh: guru02" required>
+                            <input type="text" class="form-control" id="username" placeholder="Contoh: santri01 atau guru02" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Password</label>
@@ -61,7 +61,8 @@
 
     <!-- Script Kirim Data ke Google Apps Script -->
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxLMEDlYT3iQqhQ6ChqwfDExldsaxCAwLitMKQ_v4ng6zIsMDJMGa3uGuqClO6nYMb0/exec'; // <-- Ganti dengan URL Apps Script Anda
+        // Gunakan URL Web App Google Apps Script terbaru Anda
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyNt9ru4ZxOTjamBzzTKZkHSr5dMRc6fyTDepgtGIfrsf-7QLOUn-vEIGn46Hf0o7E6/exec';
 
         function submitData(event) {
             event.preventDefault();
@@ -72,15 +73,16 @@
             btnSimpan.disabled = true;
 
             const formData = {
-                nama: document.getElementById('nama').value,
-                username: document.getElementById('username').value,
-                password: document.getElementById('password').value,
-                role: document.getElementById('role').value
+                action: "register", // <-- Diperlukan agar terbaca oleh backend Google Apps Script
+                nama: document.getElementById('nama').value.trim(),
+                username: document.getElementById('username').value.trim(),
+                password: document.getElementById('password').value.trim(),
+                role: document.getElementById('role').value.trim()
             };
 
             fetch(scriptURL, {
                 method: 'POST',
-                mode: 'no-cors', // Diperlukan untuk Apps Script
+                mode: 'no-cors', // Diperlukan untuk Google Apps Script
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             })
