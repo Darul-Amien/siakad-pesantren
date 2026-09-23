@@ -107,23 +107,24 @@
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
-            }).finally(() => {
+            }).then(() => {
                 const userLower = user.toLowerCase();
                 
-                // Pengarahan halaman berdasarkan role atau username
+                // Jika admin tetap bisa masuk, selain itu jika data di spreadsheet sudah dihapus
+                // maka akun umum akan dicegah untuk masuk.
                 if (userLower === "admin") {
                     localStorage.setItem("userRole", "admin");
                     localStorage.setItem("namaUser", "Administrator");
                     window.location.href = "dashboard.html";
-                } else if (userLower.includes("santri") || userLower.startsWith("snt") || userLower.includes("ilham")) {
-                    localStorage.setItem("userRole", "santri");
-                    localStorage.setItem("namaUser", user);
-                    window.location.href = "dashboard-santri.html";
                 } else {
-                    localStorage.setItem("userRole", "guru");
-                    localStorage.setItem("namaUser", user);
-                    window.location.href = "dashboard.html";
+                    alert("Akun tidak ditemukan atau sudah dihapus dari database!");
+                    btnMasuk.innerText = "Masuk";
+                    btnMasuk.disabled = false;
                 }
+            }).catch(error => {
+                errorAlert.classList.remove('d-none');
+                btnMasuk.innerText = "Masuk";
+                btnMasuk.disabled = false;
             });
         }
     </script>
