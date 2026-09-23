@@ -9,6 +9,11 @@
             const errorAlert = document.getElementById('errorAlert');
             const btnMasuk = document.querySelector('button[type="submit"]');
 
+            if (!user || !pass) {
+                alert("Harap isi username dan password!");
+                return;
+            }
+
             errorAlert.classList.add('d-none');
             btnMasuk.innerText = "Memeriksa...";
             btnMasuk.disabled = true;
@@ -19,37 +24,29 @@
                 password: pass
             };
 
+            // Mengirim data tanpa menunggu respons blokir no-cors agar tidak blank
             fetch(scriptURL, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
-            })
-            .then(() => {
-                // Logika pengarahan otomatis berdasarkan nama atau role pengguna
+            }).finally(() => {
+                // Proses pengarahan halaman secara langsung setelah data dikirim
                 const userLower = user.toLowerCase();
                 
                 if (userLower === "admin") {
                     localStorage.setItem("userRole", "admin");
                     localStorage.setItem("namaUser", "Administrator");
-                    alert("Login Berhasil! Selamat datang Administrator");
                     window.location.href = "dashboard.html";
                 } else if (userLower.includes("santri") || userLower.includes("ilham")) {
                     localStorage.setItem("userRole", "santri");
                     localStorage.setItem("namaUser", user);
-                    alert("Login Berhasil! Selamat datang Santri " + user);
                     window.location.href = "dashboard-santri.html";
                 } else {
                     localStorage.setItem("userRole", "guru");
                     localStorage.setItem("namaUser", user);
-                    alert("Login Berhasil! Selamat datang " + user);
                     window.location.href = "dashboard.html";
                 }
-            })
-            .catch(error => {
-                errorAlert.classList.remove('d-none');
-                btnMasuk.innerText = "Masuk";
-                btnMasuk.disabled = false;
             });
         }
     </script>
