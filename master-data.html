@@ -1,122 +1,45 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola Sistem - Manajemen Pengguna SIAKAD</title>
-    <!-- Google Fonts Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-        }
-        .bg-custom-green {
-            background-color: #198754 !important;
-        }
-        .btn-custom-green {
-            background-color: #198754 !important;
-            border-color: #198754 !important;
-            color: white !important;
-            border-radius: 50px;
-            font-weight: 600;
-        }
-        .btn-custom-green:hover {
-            background-color: #157347 !important;
-            border-color: #146c43 !important;
-        }
-        .card {
-            border-radius: 20px;
-        }
-    </style>
-</head>
-<body class="bg-light">
-
-    <!-- Navbar -->
-    <nav class="navbar navbar-dark bg-custom-green shadow-sm">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold text-white" href="dashboard.html"><i class="fas fa-arrow-left me-2"></i>Kembali ke Dashboard</a>
-        </div>
-    </nav>
-
-    <!-- Konten Utama -->
-    <div class="container my-5">
-        <div class="row g-4">
-            <!-- Form Tambah Pengguna -->
-            <div class="col-lg-5">
-                <div class="card border-0 shadow-sm p-4 h-100">
-                    <h4 class="fw-bold text-success mb-3"><i class="fas fa-user-plus me-2"></i>Tambah Pengguna</h4>
-                    <p class="text-muted small mb-4">Daftarkan akun guru, santri, atau admin baru ke SIAKAD Darul Amien.</p>
-
-                    <form id="userForm" onsubmit="submitData(event)">
-                        <div class="mb-3">
-                            <label class="form-label small fw-medium">Nama Lengkap</label>
-                            <input type="text" class="form-control p-2" id="nama" placeholder="Contoh: Muhammad Ilham" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label small fw-medium">Username / NIS / NIP</label>
-                            <input type="text" class="form-control p-2" id="username" placeholder="Contoh: santri01" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label small fw-medium">Password</label>
-                            <input type="password" class="form-control p-2" id="password" placeholder="Masukkan password" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label small fw-medium">Sebagai (Role)</label>
-                            <select class="form-select p-2" id="role" required>
-                                <option value="guru">Guru / Pengajar</option>
-                                <option value="santri">Santri / Siswa</option>
-                                <option value="admin">Administrator</option>
-                            </select>
-                        </div>
-
-                        <div class="d-grid mt-4">
-                            <button type="submit" class="btn btn-custom-green py-2" id="btnSimpan">
-                                <i class="fas fa-save me-1"></i> Simpan ke Database
-                            </button>
-                        </div>
-                    </form>
-                    <div id="statusMsg" class="mt-3"></div>
-                </div>
-            </div>
-
-            <!-- Tabel Daftar Pengguna & Fitur Hapus -->
-            <div class="col-lg-7">
-                <div class="card border-0 shadow-sm p-4 h-100">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="fw-bold text-dark mb-0"><i class="fas fa-users-cog me-2 text-success"></i>Daftar Pengguna</h4>
-                        <button class="btn btn-outline-success btn-sm" onclick="location.reload()"><i class="fas fa-sync-alt me-1"></i>Muat Ulang</button>
-                    </div>
-                    <p class="text-muted small mb-3">Kelola dan hapus akun pengguna yang terdaftar di sistem.</p>
-
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Username</th>
-                                    <th>Nama</th>
-                                    <th>Role</th>
-                                    <th class="text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="userTableBody">
-                                <!-- Data akan dimuat melalui script atau ditampilkan dari spreadsheet -->
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted py-4">Gunakan Google Sheets untuk melihat data langsung atau sinkronisasi tabel via API.</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Script Backend Integration -->
-    <script>
+<script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyNt9ru4ZxOTjamBzzTKZkHSr5dMRc6fyTDepgtGIfrsf-7QLOUn-vEIGn46Hf0o7E6/exec';
+
+        // Panggil fungsi muat data saat halaman pertama kali dibuka
+        window.onload = function() {
+            loadUsers();
+        };
+
+        // Fungsi untuk mengambil dan menampilkan daftar pengguna
+        function loadUsers() {
+            const tableBody = document.getElementById('userTableBody');
+            tableBody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3">Memuat data dari database...</td></tr>`;
+
+            // Karena menggunakan mode 'no-cors' pada POST, cara terbaik mengambil data adalah via doGet atau fetch khusus
+            // Alternatif ringan: Kita ambil data menggunakan script pemanggil jika backend mendukung doGet
+            fetch(scriptURL + "?action=get")
+                .then(response => response.json())
+                .then(data => {
+                    tableBody.innerHTML = "";
+                    if (data.length === 0) {
+                        tableBody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3">Belum ada pengguna terdaftar.</td></tr>`;
+                        return;
+                    }
+
+                    data.forEach(user => {
+                        let row = `<tr>
+                            <td>${user.username}</td>
+                            <td>${user.nama}</td>
+                            <td><span class="badge bg-secondary">${user.role}</span></td>
+                            <td class="text-center">
+                                <button class="btn btn-danger btn-sm" onclick="hapusUser('${user.username}')">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </td>
+                        </tr>`;
+                        tableBody.innerHTML += row;
+                    });
+                })
+                .catch(error => {
+                    tableBody.innerHTML = `<tr><td colspan="4" class="text-center text-danger py-3">Gagal memuat data. Periksa koneksi atau URL script.</td></tr>`;
+                });
+        }
 
         // Fungsi Tambah Pengguna (Register)
         function submitData(event) {
@@ -146,6 +69,7 @@
                 document.getElementById('userForm').reset();
                 btnSimpan.innerText = "Simpan ke Database";
                 btnSimpan.disabled = false;
+                setTimeout(loadUsers, 1500); // Muat ulang tabel otomatis
             })
             .catch(error => {
                 statusMsg.innerHTML = `<div class="alert alert-danger py-2 small">Gagal menyimpan: ${error}</div>`;
@@ -156,7 +80,7 @@
 
         // Fungsi Hapus Pengguna (Delete)
         function hapusUser(username) {
-            if (!confirm("Apakah Anda yakin ingin menghapus akun dengan username: " + username + "?")) {
+            if (!confirm("Apakah Anda yakin ingin menghapus akun: " + username + "?")) {
                 return;
             }
 
@@ -173,15 +97,10 @@
             })
             .then(() => {
                 alert("Perintah hapus dikirim untuk username: " + username);
-                // Refresh halaman untuk memperbarui tampilan
-                setTimeout(() => { location.reload(); }, 1000);
+                setTimeout(loadUsers, 1500); // Muat ulang tabel otomatis
             })
             .catch(error => {
                 alert("Terjadi kesalahan saat menghapus: " + error);
             });
         }
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
