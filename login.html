@@ -110,11 +110,12 @@
             }).finally(() => {
                 const userLower = user.toLowerCase();
                 
+                // Pengarahan halaman berdasarkan role atau username
                 if (userLower === "admin") {
                     localStorage.setItem("userRole", "admin");
                     localStorage.setItem("namaUser", "Administrator");
                     window.location.href = "dashboard.html";
-                } else if (userLower.includes("santri") || userLower.includes("ilham")) {
+                } else if (userLower.includes("santri") || userLower.startsWith("snt") || userLower.includes("ilham")) {
                     localStorage.setItem("userRole", "santri");
                     localStorage.setItem("namaUser", user);
                     window.location.href = "dashboard-santri.html";
