@@ -11,7 +11,57 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
+            background-color: #f4f6f9;
+        }
+        /* Gaya Sidebar ala EMIS/SIMPATIKA */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 48px 0 0;
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+            background-color: #ffffff;
+            width: 260px;
+        }
+        .sidebar-heading {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: .1rem;
+            color: #6c757d;
+        }
+        .sidebar .nav-link {
+            font-weight: 500;
+            color: #333;
+            padding: 12px 20px;
+            border-radius: 0 30px 30px 0;
+            margin-bottom: 4px;
+            transition: all 0.2s ease;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background-color: #e8f5e9;
+            color: #198754;
+        }
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        /* Main Content Area */
+        main {
+            margin-left: 260px;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                height: auto;
+                padding-top: 20px;
+            }
+            main {
+                margin-left: 0;
+            }
         }
         .navbar-custom {
             background-color: #198754;
@@ -38,6 +88,9 @@
             height: 100%;
             transition: transform 0.2s ease;
         }
+        .content-card:hover {
+            transform: translateY(-3px);
+        }
         .btn-outline-green {
             color: #198754;
             border-color: #198754;
@@ -58,8 +111,8 @@
 </head>
 <body onload="loadRaportGuru()">
 
-    <!-- Top Navbar -->
-    <nav class="navbar navbar-dark navbar-custom px-4 shadow-sm">
+    <!-- Top Navbar Mobile / Header -->
+    <nav class="navbar navbar-dark navbar-custom px-4 shadow-sm d-md-none">
         <div class="container-fluid">
             <span class="navbar-brand mb-0 h1 fw-bold">
                 <i class="fas fa-graduation-cap me-2"></i> SIAKAD Darul Amien
@@ -70,91 +123,142 @@
         </div>
     </nav>
 
-    <!-- Main Content Container -->
-    <div class="container my-5">
-        
-        <!-- Welcome Banner -->
-        <div class="welcome-card p-4 mb-4">
-            <span class="badge-pesantren mb-2 d-inline-block">Pondok Pesantren Darul Amien</span>
-            <h2 class="fw-bold text-dark mt-1" id="welcomeMessage">Selamat Datang, Bapak/Ibu Guru!</h2>
-            <p class="text-muted mb-0">Panel khusus pengajar — Silakan input nilai, pantau absensi, serta tinjau keaktifan mengajar Anda.</p>
+    <!-- Sidebar / Navigasi Samping ala EMIS & SIMPATIKA -->
+    <div class="sidebar d-none d-md-block px-3">
+        <div class="text-center my-3">
+            <h5 class="fw-bold text-success mb-0"><i class="fas fa-graduation-cap me-2"></i>SIAKAD</h5>
+            <small class="text-muted">Darul Amien Portal</small>
         </div>
+        <hr>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" href="dashboard-guru.html">
+                    <i class="fas fa-home"></i> Beranda Utama
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://script.google.com/macros/s/AKfycbyrPg0HDG9MGDcFgIwosx9WELezCxWoHqPcI_8f2sOYp5uDK0Eml4cWGr7PH9sX9k9x3g/exec" target="_blank">
+                    <i class="fas fa-book-open"></i> Menu Nilai
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://script.google.com/macros/s/AKfycbwp1t3nZjQHDIKqwXtU0qsT0dVKQZd0YX4RqJti4aTUHCcKXI-dzmypB4WI7jW3ymXR/exec" target="_blank">
+                    <i class="fas fa-award"></i> Poin Akademik
+                </a>
+            </li>
+        </ul>
 
-        <!-- WIDGET UTAMA: Raport Keaktifan Mengajar -->
-        <div class="row mb-4">
-            <div class="col-md-12">
-                <div class="content-card p-4 border-start border-success border-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="fw-bold text-success mb-0">
-                            <i class="fas fa-chart-line me-2"></i> Raport Keaktifan Mengajar Bulanan
-                        </h4>
-                        <span class="badge bg-success bg-opacity-15 text-success px-3 py-2 rounded-pill fw-medium" id="statusKeaktifan">Memuat data...</span>
-                    </div>
-                    <p class="text-muted small mb-3">Akumulasi kehadiran realisasi mengajar dibandingkan dengan target jadwal wajib bulanan Anda.</p>
-                    
-                    <div class="row align-items-center">
-                        <div class="col-md-8">
-                            <div class="progress mb-2 bg-light border">
-                                <div id="progressBar" class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
-                            </div>
-                            <div class="d-flex justify-content-between text-muted small">
-                                <span>Realisasi Masuk: <strong id="valRealisasi" class="text-dark">0</strong> sesi</span>
-                                <span>Target Jadwal: <strong id="valTarget" class="text-dark">0</strong> sesi</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                            <h2 class="fw-bold text-success mb-0" id="valPersentase">0%</h2>
-                            <small class="text-muted">Tingkat Keaktifan</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <hr class="my-4">
+        <div class="px-2">
+            <button onclick="logout()" class="btn btn-outline-danger w-100 rounded-pill btn-sm">
+                <i class="fas fa-sign-out-alt me-1"></i> Keluar Sistem
+            </button>
         </div>
-
-        <!-- Daftar Menu Card Khusus Guru -->
-        <div class="row g-4">
-            
-            <!-- Card Manajemen Nilai -->
-            <div class="col-md-6">
-                <div class="content-card p-4">
-                    <h5 class="fw-bold text-success mb-2">
-                        <i class="fas fa-book-open me-2"></i> Manajemen Akademik
-                    </h5>
-                    <p class="text-muted small mb-4">
-                        Kelola data nilai ujian, rekap absensi harian, dan rapor santri.
-                    </p>
-                    <div>
-                        <a href="https://script.google.com/macros/s/AKfycbyrPg0HDG9MGDcFgIwosx9WELezCxWoHqPcI_8f2sOYp5uDK0Eml4cWGr7PH9sX9k9x3g/exec" 
-                           target="_blank" 
-                           class="btn btn-outline-green shadow-sm">
-                            Buka Menu Nilai
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card Manajemen Poin Akademik -->
-            <div class="col-md-6">
-                <div class="content-card p-4">
-                    <h5 class="fw-bold text-success mb-2">
-                        <i class="fas fa-award me-2"></i> Poin & Prestasi Akademik
-                    </h5>
-                    <p class="text-muted small mb-4">
-                        Kelola pencatatan poin pelanggaran, kedisiplinan, serta prestasi santri.
-                    </p>
-                    <div>
-                        <a href="https://script.google.com/macros/s/AKfycbwp1t3nZjQHDIKqwXtU0qsT0dVKQZd0YX4RqJti4aTUHCcKXI-dzmypB4WI7jW3ymXR/exec" 
-                           target="_blank" 
-                           class="btn btn-outline-green shadow-sm">
-                            Buka Menu Poin Akademik
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
     </div>
+
+    <!-- Main Content Container -->
+    <main class="px-md-4 py-4">
+        <div class="container-fluid">
+            
+            <!-- Top Bar Desktop Info -->
+            <div class="d-none d-md-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                <div>
+                    <h4 class="fw-bold text-dark mb-0">Portal Guru / Pengajar</h4>
+                    <small class="text-muted">Sistem Informasi Akademik Pesantren Darul Amien</small>
+                </div>
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill fw-semibold me-3">
+                        <i class="fas fa-user-circle me-1"></i> <span id="badgeNamaUser">Pengajar</span>
+                    </span>
+                    <button onclick="logout()" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                        <i class="fas fa-sign-out-alt me-1"></i> Keluar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Welcome Banner -->
+            <div class="welcome-card p-4 mb-4">
+                <span class="badge-pesantren mb-2 d-inline-block">Pondok Pesantren Darul Amien</span>
+                <h2 class="fw-bold text-dark mt-1" id="welcomeMessage">Selamat Datang, Bapak/Ibu Guru!</h2>
+                <p class="text-muted mb-0">Panel khusus pengajar — Silakan input nilai, pantau absensi, serta tinjau keaktifan mengajar Anda.</p>
+            </div>
+
+            <!-- WIDGET UTAMA: Raport Keaktifan Mengajar -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="content-card p-4 border-start border-success border-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="fw-bold text-success mb-0">
+                                <i class="fas fa-chart-line me-2"></i> Raport Keaktifan Mengajar Bulanan
+                            </h4>
+                            <span class="badge bg-success bg-opacity-15 text-success px-3 py-2 rounded-pill fw-medium" id="statusKeaktifan">Memuat data...</span>
+                        </div>
+                        <p class="text-muted small mb-3">Akumulasi kehadiran realisasi mengajar dibandingkan dengan target jadwal wajib bulanan Anda.</p>
+                        
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <div class="progress mb-2 bg-light border">
+                                    <div id="progressBar" class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                                </div>
+                                <div class="d-flex justify-content-between text-muted small">
+                                    <span>Realisasi Masuk: <strong id="valRealisasi" class="text-dark">0</strong> sesi</span>
+                                    <span>Target Jadwal: <strong id="valTarget" class="text-dark">0</strong> sesi</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                                <h2 class="fw-bold text-success mb-0" id="valPersentase">0%</h2>
+                                <small class="text-muted">Tingkat Keaktifan</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daftar Menu Card Khusus Guru -->
+            <div class="row g-4">
+                
+                <!-- Card Manajemen Nilai -->
+                <div class="col-md-6">
+                    <div class="content-card p-4">
+                        <h5 class="fw-bold text-success mb-2">
+                            <i class="fas fa-book-open me-2"></i> Manajemen Akademik
+                        </h5>
+                        <p class="text-muted small mb-4">
+                            Kelola data nilai ujian, rekap absensi harian, dan rapor santri.
+                        </p>
+                        <div>
+                            <a href="https://script.google.com/macros/s/AKfycbyrPg0HDG9MGDcFgIwosx9WELezCxWoHqPcI_8f2sOYp5uDK0Eml4cWGr7PH9sX9k9x3g/exec" 
+                               target="_blank" 
+                               class="btn btn-outline-green shadow-sm">
+                                Buka Menu Nilai
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Manajemen Poin Akademik -->
+                <div class="col-md-6">
+                    <div class="content-card p-4">
+                        <h5 class="fw-bold text-success mb-2">
+                            <i class="fas fa-award me-2"></i> Poin & Prestasi Akademik
+                        </h5>
+                        <p class="text-muted small mb-4">
+                            Kelola pencatatan poin pelanggaran, kedisiplinan, serta prestasi santri.
+                        </p>
+                        <div>
+                            <a href="https://script.google.com/macros/s/AKfycbwp1t3nZjQHDIKqwXtU0qsT0dVKQZd0YX4RqJti4aTUHCcKXI-dzmypB4WI7jW3ymXR/exec" 
+                               target="_blank" 
+                               class="btn btn-outline-green shadow-sm">
+                                Buka Menu Poin Akademik
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
 
     <!-- Script JavaScript -->
     <script>
@@ -165,6 +269,7 @@
             const namaUser = localStorage.getItem("namaUser");
             if (namaUser && namaUser !== "admin" && namaUser !== "Administrator") {
                 document.getElementById('welcomeMessage').innerText = `Selamat Datang, ${namaUser}!`;
+                document.getElementById('badgeNamaUser').innerText = namaUser;
             }
         });
 
