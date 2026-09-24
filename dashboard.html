@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Guru - SIAKAD Darul Amien</title>
+    <title>Dashboard Admin - SIAKAD Darul Amien</title>
     <!-- Google Fonts Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -58,7 +58,7 @@
     <nav class="navbar navbar-dark navbar-custom px-4 shadow-sm">
         <div class="container-fluid">
             <span class="navbar-brand mb-0 h1 fw-bold">
-                <i class="fas fa-graduation-cap me-2"></i> SIAKAD Darul Amien
+                <i class="fas fa-graduation-cap me-2"></i> SIAKAD Darul Amien (Admin Panel)
             </span>
             <button onclick="logout()" class="btn btn-outline-light btn-sm rounded-pill px-3">
                 <i class="fas fa-sign-out-alt me-1"></i> Keluar
@@ -72,47 +72,41 @@
         <!-- Welcome Banner -->
         <div class="welcome-card p-4 mb-4">
             <span class="badge-pesantren mb-2 d-inline-block">Pondok Pesantren Darul Amien</span>
-            <h2 class="fw-bold text-dark mt-1" id="welcomeMessage">Selamat Datang, Bapak/Ibu Guru!</h2>
-            <p class="text-muted mb-0">Panel khusus pengajar — Silakan input nilai dan pantau absensi kelas Anda.</p>
+            <h2 class="fw-bold text-dark mt-1" id="welcomeMessage">Selamat Datang, Administrator!</h2>
+            <p class="text-muted mb-0">Panel kontrol utama — Kelola data pengguna, hak akses, dan konfigurasi sistem SIAKAD.</p>
         </div>
 
-        <!-- Daftar Menu Card Khusus Guru -->
-        <div class="row g-4" id="guruMenuList">
+        <!-- Daftar Menu Admin -->
+        <div class="row g-4">
             
-            <!-- Card Manajemen Nilai -->
+            <!-- Card Master Data / Kelola User -->
             <div class="col-md-6">
                 <div class="content-card p-4">
                     <h5 class="fw-bold text-success mb-2">
-                        <i class="fas fa-book-open me-2"></i> Manajemen Akademik
+                        <i class="fas fa-users-cog me-2"></i> Kelola Pengguna & Master Data
                     </h5>
                     <p class="text-muted small mb-4">
-                        Kelola data nilai ujian, rekap absensi harian, dan rapor santri.
+                        Tambah, edit, atau hapus akun pengguna (admin, guru, santri) yang terhubung ke database spreadsheet.
                     </p>
                     <div>
-                        <a href="https://script.google.com/macros/s/AKfycbyrPg0HDG9MGDcFgIwosx9WELezCxWoHqPcI_8f2sOYp5uDK0Eml4cWGr7PH9sX9k9x3g/exec" 
-                           target="_blank" 
-                           class="btn btn-outline-green shadow-sm">
-                            Buka Menu Nilai
+                        <a href="master-data.html" class="btn btn-outline-green shadow-sm">
+                            Buka Master Data
                         </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Card Manajemen Poin Akademik -->
+            <!-- Card Informasi Sistem -->
             <div class="col-md-6">
                 <div class="content-card p-4">
                     <h5 class="fw-bold text-success mb-2">
-                        <i class="fas fa-award me-2"></i> Poin & Prestasi Akademik
+                        <i class="fas fa-server me-2"></i> Status Sistem Terpadu
                     </h5>
                     <p class="text-muted small mb-4">
-                        Kelola pencatatan poin pelanggaran, kedisiplinan, serta prestasi santri.
+                        Pantau koneksi database Google Sheets, backend Google Apps Script, serta modul pembayaran SPP.
                     </p>
                     <div>
-                        <a href="https://script.google.com/macros/s/AKfycbwp1t3nZjQHDIKqwXtU0qsT0dVKQZd0YX4RqJti4aTUHCcKXI-dzmypB4WI7jW3ymXR/exec" 
-                           target="_blank" 
-                           class="btn btn-outline-green shadow-sm">
-                            Buka Menu Poin Akademik
-                        </a>
+                        <span class="badge bg-success py-2 px-3 fw-normal">Sistem Aktif & Aman</span>
                     </div>
                 </div>
             </div>
@@ -122,11 +116,8 @@
     </div>
 
     <script>
-        // Cek nama user yang aktif dari sesi login
         window.addEventListener('DOMContentLoaded', (event) => {
             const namaUser = localStorage.getItem("namaUser");
-            const userRole = localStorage.getItem("userRole");
-
             if (namaUser && namaUser !== "admin" && namaUser !== "Administrator") {
                 document.getElementById('welcomeMessage').innerText = `Selamat Datang, ${namaUser}!`;
             }
