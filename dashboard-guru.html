@@ -117,7 +117,7 @@
         }
     </style>
 </head>
-<body onload="loadRaportGuru()">
+<body onload="loadRaportGuru(); loadInfoAkademik();">
 
     <!-- Top Navbar Mobile / Header -->
     <nav class="navbar navbar-dark navbar-custom px-4 shadow-sm d-md-none">
@@ -230,17 +230,8 @@
                         <h5 class="fw-bold text-success mb-3">
                             <i class="fas fa-bullhorn me-2"></i> Pengumuman & Informasi
                         </h5>
-                        
-                        <div class="announcement-item">
-                            <h6 class="fw-bold text-dark mb-1">Pengumpulan Nilai Ujian Semester</h6>
-                            <p class="text-muted small mb-1">Batas akhir penginputan nilai rapor santri melalui sistem selambat-lambatnya akhir pekan ini.</p>
-                            <span class="badge bg-light text-secondary font-monospace" style="font-size: 0.7rem;"><i class="far fa-clock me-1"></i> Hari ini</span>
-                        </div>
-
-                        <div class="announcement-item border-start border-success">
-                            <h6 class="fw-bold text-dark mb-1">Rapat Koordinasi Dewan Guru</h6>
-                            <p class="text-muted small mb-1">Diharapkan kehadiran seluruh guru pengampu pada rapat evaluasi bulanan di Aula Utama pukul 14.00 WIB.</p>
-                            <span class="badge bg-light text-secondary font-monospace" style="font-size: 0.7rem;"><i class="far fa-clock me-1"></i> 2 Hari yang lalu</span>
+                        <div id="containerPengumuman">
+                            <p class="text-muted small">Memuat pengumuman...</p>
                         </div>
                     </div>
                 </div>
@@ -251,27 +242,8 @@
                         <h5 class="fw-bold text-success mb-3">
                             <i class="fas fa-calendar-alt me-2"></i> Kalender Akademik Terdekat
                         </h5>
-
-                        <div class="d-flex align-items-center mb-3 pb-2 border-bottom">
-                            <div class="calendar-badge me-3">
-                                <span class="d-block fs-6 fw-bold">10</span>
-                                <small class="d-block" style="font-size: 0.65rem;">OKT</small>
-                            </div>
-                            <div>
-                                <h6 class="fw-bold text-dark mb-0">Ujian Tengah Semester (UTS)</h6>
-                                <small class="text-muted">Pelaksanaan UTS ganjil seluruh tingkat santri.</small>
-                            </div>
-                        </div>
-
-                        <div class="d-flex align-items-center mb-2">
-                            <div class="calendar-badge me-3 bg-opacity-10 bg-success">
-                                <span class="d-block fs-6 fw-bold">25</span>
-                                <small class="d-block" style="font-size: 0.65rem;">OKT</small>
-                            </div>
-                            <div>
-                                <h6 class="fw-bold text-dark mb-0">Pekan Evaluasi & Pesantren Kilat</h6>
-                                <small class="text-muted">Agenda rutin pembinaan karakter santri.</small>
-                            </div>
+                        <div id="containerKalender">
+                            <p class="text-muted small">Memuat kalender...</p>
                         </div>
                     </div>
                 </div>
@@ -366,6 +338,63 @@
                 console.error("Gagal memuat raport guru", err);
                 document.getElementById('statusKeaktifan').innerText = "Gagal memuat koneksi";
             });
+        }
+
+        // Fungsi Baru untuk Mengambil Data Pengumuman & Kalender dari Google Sheets
+        function loadInfoAkademik() {
+            fetch(scriptURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: "getInfoAkademik" })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === "success") {
+                    // Render Pengumuman
+                    const containerP = document.getElementById('containerPengumuman');
+                    if(data.pengumuman && data.pengumuman.length > 0) {
+                        let htmlP = "";
+                        data.pengumuman.forEach((item, index) => {
+                            let borderStyle = index % 2 === 0 ? "border-start border-warning" : "border-start border-success";
+                            htmlP += `
+                                <div class="announcement-item ${borderStyle}">
+                                    <h6 class="fw-bold text-dark mb-1">${item.judul}</h6>
+                                    <p class="text-muted small mb-1">${item.isi}</p>
+                                    <span class="badge bg-light text-secondary font-monospace" style="font-size: 0.7rem;"><i class="far fa-clock me-1"></i> ${item.waktu}</span>
+                                </div>
+                            `;
+                        });
+                        containerP.innerHTML = htmlP;
+                    } else {
+                        containerP.innerHTML = `<p class="text-muted small">Belum ada pengumuman.</p>`;
+                    }
+
+                    // Render Kalender
+                    const containerK = document.getElementById('containerKalender');
+                    if(data.kalender && data.kalender.length > 0) {
+                        let htmlK = "";
+                        data.kalender.forEach((item, index) => {
+                            let borderClass = index === data.kalender.length - 1 ? "" : "mb-3 pb-2 border-bottom";
+                            htmlK += `
+                                <div class="d-flex align-items-center ${borderClass}">
+                                    <div class="calendar-badge me-3">
+                                        <span class="d-block fs-6 fw-bold">${item.tanggal}</span>
+                                        <small class="d-block" style="font-size: 0.65rem;">${item.bulan}</small>
+                                    </div>
+                                    <div>
+                                        <h6 class="fw-bold text-dark mb-0">${item.judul}</h6>
+                                        <small class="text-muted">${item.keterangan}</small>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        containerK.innerHTML = htmlK;
+                    } else {
+                        containerK.innerHTML = `<p class="text-muted small">Belum ada agenda kalender.</p>`;
+                    }
+                }
+            })
+            .catch(err => console.error("Gagal memuat info akademik:", err));
         }
 
         function ubahPassword() {
