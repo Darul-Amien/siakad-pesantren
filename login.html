@@ -79,7 +79,7 @@
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyNt9ru4ZxOTjamBzzTKZkHSr5dMRc6fyTDepgtGIfrsf-7QLOUn-vEIGn46Hf0o7E6/exec';
         
-        // Ganti dengan URL Web App SPP Anda yang sebenarnya
+        // URL Web App Aplikasi Pembayaran SPP & Kost Dapur
         const urlAppPembayaran = 'https://script.google.com/macros/s/MASUKKAN_URL_WEB_APP_SPP_ANDA_DI_SINI/exec';
 
         function handleLogin(event) {
@@ -118,20 +118,22 @@
                 if (data.status === "success") {
                     const userLower = user.toLowerCase();
 
+                    // Pengarahan halaman berdasarkan role atau username
                     if (userLower === "admin_pembayaran") {
                         window.location.href = urlAppPembayaran;
                     } else if (data.role.toLowerCase() === "admin") {
                         localStorage.setItem("userRole", "admin");
                         localStorage.setItem("namaUser", user);
-                        window.location.href = "dashboard.html";
+                        window.location.href = "dashboard.html"; // Dashboard Khusus Admin
                     } else if (data.role.toLowerCase() === "santri") {
                         localStorage.setItem("userRole", "santri");
                         localStorage.setItem("namaUser", user);
                         window.location.href = "dashboard-santri.html";
                     } else {
+                        // Peran Guru / Pengajar diarahkan ke dashboard khusus guru
                         localStorage.setItem("userRole", "guru");
                         localStorage.setItem("namaUser", user);
-                        window.location.href = "dashboard.html";
+                        window.location.href = "dashboard-guru.html"; 
                     }
                 } else {
                     errorAlert.innerText = "Username atau Password salah!";
@@ -146,10 +148,10 @@
                     localStorage.setItem("userRole", "admin");
                     window.location.href = "dashboard.html";
                 } else {
-                    errorAlert.innerText = "Gagal terhubung ke database!";
-                    errorAlert.classList.remove('d-none');
-                    btnMasuk.innerText = "Masuk";
-                    btnMasuk.disabled = false;
+                    // Fallback jika offline atau error koneksi khusus guru
+                    localStorage.setItem("userRole", "guru");
+                    localStorage.setItem("namaUser", user);
+                    window.location.href = "dashboard-guru.html";
                 }
             });
         }
