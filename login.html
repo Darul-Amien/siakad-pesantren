@@ -79,8 +79,9 @@
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyNt9ru4ZxOTjamBzzTKZkHSr5dMRc6fyTDepgtGIfrsf-7QLOUn-vEIGn46Hf0o7E6/exec';
         
-        // URL Web App Aplikasi Pembayaran SPP & Kost Dapur
+        // URL Web App Aplikasi Terintegrasi
         const urlAppPembayaran = 'https://script.google.com/macros/s/MASUKKAN_URL_WEB_APP_SPP_ANDA_DI_SINI/exec';
+        const urlAppUks = 'https://script.google.com/macros/s/AKfycbw8k8BR4FT0IS7UcukeF0tdjdDyV_uF_b4KOUKEdmgps-hVpsQsjzUUtGRLLR-4aW2ZWA/exec';
 
         function handleLogin(event) {
             event.preventDefault();
@@ -118,22 +119,23 @@
                 if (data.status === "success") {
                     const userLower = user.toLowerCase();
 
-                    // Pengarahan halaman berdasarkan role atau username
+                    // Pengarahan halaman khusus berdasarkan username / role
                     if (userLower === "admin_pembayaran") {
                         window.location.href = urlAppPembayaran;
+                    } else if (userLower === "admin_uks") {
+                        window.location.href = urlAppUks; // Langsung dialihkan ke aplikasi buku induk UKS
                     } else if (data.role.toLowerCase() === "admin") {
                         localStorage.setItem("userRole", "admin");
                         localStorage.setItem("namaUser", user);
-                        window.location.href = "dashboard.html"; // Dashboard Khusus Admin
+                        window.location.href = "dashboard.html";
                     } else if (data.role.toLowerCase() === "santri") {
                         localStorage.setItem("userRole", "santri");
                         localStorage.setItem("namaUser", user);
                         window.location.href = "dashboard-santri.html";
                     } else {
-                        // Peran Guru / Pengajar diarahkan ke dashboard khusus guru
                         localStorage.setItem("userRole", "guru");
                         localStorage.setItem("namaUser", user);
-                        window.location.href = "dashboard-guru.html"; 
+                        window.location.href = "dashboard-guru.html";
                     }
                 } else {
                     errorAlert.innerText = "Username atau Password salah!";
@@ -144,11 +146,12 @@
                 const userLower = user.toLowerCase();
                 if (userLower === "admin_pembayaran") {
                     window.location.href = urlAppPembayaran;
+                } else if (userLower === "admin_uks") {
+                    window.location.href = urlAppUks;
                 } else if (userLower === "admin") {
                     localStorage.setItem("userRole", "admin");
                     window.location.href = "dashboard.html";
                 } else {
-                    // Fallback jika offline atau error koneksi khusus guru
                     localStorage.setItem("userRole", "guru");
                     localStorage.setItem("namaUser", user);
                     window.location.href = "dashboard-guru.html";
