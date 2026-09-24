@@ -127,7 +127,8 @@
 
     <!-- Script JavaScript -->
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyNt9ru4ZxOTjamBzzTKZkHSr5dMRc6fyTDepgtGIfrsf-7QLOUn-vEIGn46Hf0o7E6/exec';
+        // URL Web App New Deployment Anda
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxuTp1ajC05r5a3Pg3MiBMF14Mx0Ykv2O0MmAYYvWqDm0qWDkvbOOClFI4CUhKlN0iy/exec';
 
         // Fungsi Tambah Pengguna
         function submitData(event) {
@@ -166,15 +167,14 @@
             });
         }
 
-        // Fungsi Memuat Data Tabel Secara Real-Time via POST
+        // Fungsi Memuat Data Tabel Secara Real-Time via GET
         function loadUsers() {
             const tbody = document.getElementById('userTableBody');
             tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">Memuat data pengguna...</td></tr>`;
 
-            fetch(scriptURL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ action: "getUsers" })
+            fetch(`${scriptURL}?action=getUsers`, {
+                method: 'GET',
+                redirect: "follow"
             })
             .then(response => response.json())
             .then(users => {
