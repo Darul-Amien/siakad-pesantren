@@ -154,7 +154,8 @@
                     window.location.href = urlAppUks;
                 } else if (userLower === "admin") {
                     localStorage.setItem("userRole", "admin");
-                    window.location.href = "dashboard.html";
+                    // Diperbarui ke dashboard-admin.html agar konsisten
+                    window.location.href = "dashboard-admin.html";
                 } else {
                     localStorage.setItem("userRole", "guru");
                     localStorage.setItem("namaUser", user);
