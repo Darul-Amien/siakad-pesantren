@@ -166,16 +166,17 @@
             });
         }
 
-        // Fungsi Memuat Data Tabel Secara Real-Time
+        // Fungsi Memuat Data Tabel Secara Real-Time via POST
         function loadUsers() {
             const tbody = document.getElementById('userTableBody');
             tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">Memuat data pengguna...</td></tr>`;
 
-            fetch(`${scriptURL}?action=getUsers`)
-            .then(response => {
-                if (!response.ok) throw new Error("HTTP error! status: " + response.status);
-                return response.json();
+            fetch(scriptURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: "getUsers" })
             })
+            .then(response => response.json())
             .then(users => {
                 tbody.innerHTML = '';
                 if (!Array.isArray(users) || users.length === 0) {
