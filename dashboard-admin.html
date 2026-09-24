@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - SIAKAD Darul Amien</title>
+    <!-- Google Fonts Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .navbar-custom {
+            background-color: #198754;
+        }
+        .welcome-card {
+            background: #ffffff;
+            border-left: 5px solid #198754;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .badge-pesantren {
+            background-color: #198754;
+            color: white;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+        }
+        .content-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: none;
+            height: 100%;
+            transition: transform 0.2s ease;
+        }
+        .btn-custom-green {
+            background-color: #198754 !important;
+            border-color: #198754 !important;
+            color: white !important;
+            border-radius: 8px;
+            font-weight: 600;
+            padding: 8px 20px;
+        }
+        .btn-custom-green:hover {
+            background-color: #157347 !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-dark navbar-custom px-4 shadow-sm">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1 fw-bold">
+                <i class="fas fa-graduation-cap me-2"></i> SIAKAD Darul Amien (Admin Panel)
+            </span>
+            <button onclick="logout()" class="btn btn-outline-light btn-sm rounded-pill px-3">
+                <i class="fas fa-sign-out-alt me-1"></i> Keluar
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <div class="container my-5">
+        
+        <!-- Welcome Banner -->
+        <div class="welcome-card p-4 mb-4">
+            <span class="badge-pesantren mb-2 d-inline-block">Pondok Pesantren Darul Amien</span>
+            <h2 class="fw-bold text-dark mt-1" id="welcomeMessage">Selamat Datang, Administrator!</h2>
+            <p class="text-muted mb-0">Panel kontrol utama — Kelola data pengguna, hak akses, dan konfigurasi sistem SIAKAD.</p>
+        </div>
+
+        <!-- Daftar Menu / Kartu Admin -->
+        <div class="row g-4">
+            
+            <!-- Kartu 1: Kelola Pengguna & Master Data (Asli Anda) -->
+            <div class="col-md-4">
+                <div class="content-card p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="fw-bold text-success mb-2">
+                            <i class="fas fa-users-cog me-2"></i> Kelola Pengguna & Master Data
+                        </h5>
+                        <p class="text-muted small mb-4">
+                            Tambah, edit, atau hapus akun pengguna (admin, guru, santri) yang terhubung ke database spreadsheet.
+                        </p>
+                    </div>
+                    <div>
+                        <a href="master-data.html" class="btn btn-custom-green shadow-sm w-100">
+                            Buka Master Data
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kartu 2: Input Keaktifan Mengajar Guru (Baru / Tautan ke Spreadsheet) -->
+            <div class="col-md-4">
+                <div class="content-card p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="fw-bold text-success mb-2">
+                            <i class="fas fa-file-excel me-2"></i> Input Keaktifan Mengajar
+                        </h5>
+                        <p class="text-muted small mb-4">
+                            Akses spreadsheet rekap harian guru untuk menginput data realisasi mengajar secara langsung.
+                        </p>
+                    </div>
+                    <div>
+                        <!-- Ganti URL_SPREADSHEET_ANDA dengan link Google Spreadsheet Raport Keaktifan Guru Anda -->
+                        <a href="URL_SPREADSHEET_ANDA" 
+                           target="_blank" 
+                           class="btn btn-custom-green shadow-sm w-100">
+                            Buka Spreadsheet Rekap
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kartu 3: Status Sistem Terpadu (Asli Anda) -->
+            <div class="col-md-4">
+                <div class="content-card p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="fw-bold text-success mb-2">
+                            <i class="fas fa-server me-2"></i> Status Sistem Terpadu
+                        </h5>
+                        <p class="text-muted small mb-4">
+                            Pantau koneksi database Google Sheets, backend Google Apps Script, serta modul pembayaran SPP.
+                        </p>
+                    </div>
+                    <div>
+                        <button class="btn btn-success btn-sm rounded-pill px-3 w-100 py-2 disabled" style="background-color: #198754;">
+                            <i class="fas fa-check-circle me-1"></i> Sistem Aktif & Aman
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Script JavaScript -->
+    <script>
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const namaUser = localStorage.getItem("namaUser");
+            if (namaUser && namaUser !== "admin" && namaUser !== "Administrator") {
+                document.getElementById('welcomeMessage').innerText = `Selamat Datang, ${namaUser}!`;
+            }
+        });
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
