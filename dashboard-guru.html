@@ -25,12 +25,6 @@
             background-color: #ffffff;
             width: 260px;
         }
-        .sidebar-heading {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: .1rem;
-            color: #6c757d;
-        }
         .sidebar .nav-link {
             font-weight: 500;
             color: #333;
@@ -216,7 +210,6 @@
 
             <!-- Daftar Menu Card Khusus Guru -->
             <div class="row g-4">
-                
                 <!-- Card Manajemen Nilai -->
                 <div class="col-md-6">
                     <div class="content-card p-4">
@@ -254,7 +247,38 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
+            <!-- Card Keamanan Akun & Ubah Password -->
+            <div class="row g-4 mt-2">
+                <div class="col-md-12">
+                    <div class="content-card p-4">
+                        <h5 class="fw-bold text-success mb-2">
+                            <i class="fas fa-key me-2"></i> Keamanan Akun & Ubah Password
+                        </h5>
+                        <p class="text-muted small mb-3">
+                            Perbarui password akun secara berkala agar keamanan data pengajaran tetap terjaga.
+                        </p>
+                        
+                        <div id="alertPassword" class="alert d-none py-2 small" role="alert"></div>
+
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-medium">Password Lama</label>
+                                <input type="password" id="oldPassword" class="form-control form-control-sm" placeholder="Masukkan password lama">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-medium">Password Baru</label>
+                                <input type="password" id="newPassword" class="form-control form-control-sm" placeholder="Masukkan password baru">
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button type="button" onclick="ubahPassword()" class="btn btn-outline-green w-100 shadow-sm btn-sm py-2">
+                                    Simpan Password Baru
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -315,6 +339,55 @@
             .catch(err => {
                 console.error("Gagal memuat raport guru", err);
                 document.getElementById('statusKeaktifan').innerText = "Gagal memuat koneksi";
+            });
+        }
+
+        // Fungsi Ubah Password Mandiri
+        function ubahPassword() {
+            const username = localStorage.getItem("namaUser");
+            const oldPass = document.getElementById('oldPassword').value.trim();
+            const newPass = document.getElementById('newPassword').value.trim();
+            const alertBox = document.getElementById('alertPassword');
+
+            if (!oldPass || !newPass) {
+                alertBox.className = "alert alert-danger py-2 small";
+                alertBox.innerText = "Harap isi password lama dan password baru!";
+                alertBox.classList.remove('d-none');
+                return;
+            }
+
+            if (!confirm("Yakin ingin mengubah password akun Anda?")) return;
+
+            const payload = {
+                action: "changePassword",
+                username: username,
+                oldPassword: oldPass,
+                newPassword: newPass
+            };
+
+            fetch(scriptURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alertBox.classList.remove('d-none');
+                if (data.status === "success") {
+                    alertBox.className = "alert alert-success py-2 small";
+                    alertBox.innerText = data.message;
+                    document.getElementById('oldPassword').value = "";
+                    document.getElementById('newPassword').value = "";
+                } else {
+                    alertBox.className = "alert alert-danger py-2 small";
+                    alertBox.innerText = data.message;
+                }
+            })
+            .catch(err => {
+                console.error("Error:", err);
+                alertBox.className = "alert alert-danger py-2 small";
+                alertBox.innerText = "Terjadi kesalahan jaringan.";
+                alertBox.classList.remove('d-none');
             });
         }
 
