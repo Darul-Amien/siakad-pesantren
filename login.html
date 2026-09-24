@@ -119,15 +119,19 @@
                 if (data.status === "success") {
                     const userLower = user.toLowerCase();
 
-                    // Pengarahan halaman khusus berdasarkan username / role
+                    // Pengarahan halaman berdasarkan role atau username khusus
                     if (userLower === "admin_pembayaran") {
                         window.location.href = urlAppPembayaran;
                     } else if (userLower === "admin_uks") {
-                        window.location.href = urlAppUks; // Langsung dialihkan ke aplikasi buku induk UKS
+                        window.location.href = urlAppUks;
                     } else if (data.role.toLowerCase() === "admin") {
                         localStorage.setItem("userRole", "admin");
                         localStorage.setItem("namaUser", user);
                         window.location.href = "dashboard.html";
+                    } else if (data.role.toLowerCase() === "walikelas" || data.role.toLowerCase() === "wali_kelas") {
+                        localStorage.setItem("userRole", "walikelas");
+                        localStorage.setItem("namaUser", user);
+                        window.location.href = "dashboard-wali-kelas.html";
                     } else if (data.role.toLowerCase() === "santri") {
                         localStorage.setItem("userRole", "santri");
                         localStorage.setItem("namaUser", user);
