@@ -50,9 +50,13 @@
             background-color: #198754;
             color: white;
         }
+        .progress {
+            height: 12px;
+            border-radius: 10px;
+        }
     </style>
 </head>
-<body>
+<body onload="loadRaportGuru()">
 
     <!-- Top Navbar -->
     <nav class="navbar navbar-dark navbar-custom px-4 shadow-sm">
@@ -73,13 +77,44 @@
         <div class="welcome-card p-4 mb-4">
             <span class="badge-pesantren mb-2 d-inline-block">Pondok Pesantren Darul Amien</span>
             <h2 class="fw-bold text-dark mt-1" id="welcomeMessage">Selamat Datang, Bapak/Ibu Guru!</h2>
-            <p class="text-muted mb-0">Panel khusus pengajar — Silakan input nilai dan pantau absensi kelas Anda.</p>
+            <p class="text-muted mb-0">Panel khusus pengajar — Silakan input nilai, pantau absensi, serta tinjau keaktifan mengajar Anda.</p>
+        </div>
+
+        <!-- WIDGET UTAMA: Raport Keaktifan Mengajar -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="content-card p-4 border-start border-success border-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="fw-bold text-success mb-0">
+                            <i class="fas fa-chart-line me-2"></i> Raport Keaktifan Mengajar Bulanan
+                        </h4>
+                        <span class="badge bg-success bg-opacity-15 text-success px-3 py-2 rounded-pill fw-medium" id="statusKeaktifan">Memuat data...</span>
+                    </div>
+                    <p class="text-muted small mb-3">Akumulasi kehadiran realisasi mengajar dibandingkan dengan target jadwal wajib bulanan Anda.</p>
+                    
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="progress mb-2 bg-light border">
+                                <div id="progressBar" class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                            </div>
+                            <div class="d-flex justify-content-between text-muted small">
+                                <span>Realisasi Masuk: <strong id="valRealisasi" class="text-dark">0</strong> sesi</span>
+                                <span>Target Jadwal: <strong id="valTarget" class="text-dark">0</strong> sesi</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            <h2 class="fw-bold text-success mb-0" id="valPersentase">0%</h2>
+                            <small class="text-muted">Tingkat Keaktifan</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Daftar Menu Card Khusus Guru -->
         <div class="row g-4">
             
-            <!-- Card Manajemen Nilai -->
+            <!-- Card Manajemen Nilai (Asli Anda) -->
             <div class="col-md-6">
                 <div class="content-card p-4">
                     <h5 class="fw-bold text-success mb-2">
@@ -98,7 +133,7 @@
                 </div>
             </div>
 
-            <!-- Card Manajemen Poin Akademik -->
+            <!-- Card Manajemen Poin Akademik (Asli Anda) -->
             <div class="col-md-6">
                 <div class="content-card p-4">
                     <h5 class="fw-bold text-success mb-2">
@@ -121,13 +156,61 @@
 
     </div>
 
+    <!-- Script JavaScript -->
     <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxuTp1ajC05r5a3Pg3MiBMF14Mx0Ykv2O0MmAYYvWqDm0qWDkvbOOClFI4CUhKlN0iy/exec';
+
         window.addEventListener('DOMContentLoaded', (event) => {
             const namaUser = localStorage.getItem("namaUser");
             if (namaUser && namaUser !== "admin" && namaUser !== "Administrator") {
                 document.getElementById('welcomeMessage').innerText = `Selamat Datang, ${namaUser}!`;
             }
         });
+
+        // Fungsi mengambil data raport keaktifan guru secara otomatis berdasarkan nama login
+        function loadRaportGuru() {
+            const namaUser = localStorage.getItem("namaUser") || "";
+
+            if (!namaUser || namaUser === "admin" || namaUser === "Administrator") {
+                document.getElementById('statusKeaktifan').innerText = "Akun Admin (Mode Tinjau)";
+                return;
+            }
+
+            fetch(scriptURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: "getRaportGuru", namaUser: namaUser })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status === "success") {
+                    document.getElementById('valTarget').innerText = data.target;
+                    document.getElementById('valRealisasi').innerText = data.realisasi;
+                    document.getElementById('valPersentase').innerText = data.persentase + "%";
+                    
+                    const bar = document.getElementById('progressBar');
+                    bar.style.width = data.persentase + "%";
+
+                    let statusBadge = document.getElementById('statusKeaktifan');
+                    if(data.persentase >= 90) {
+                        statusBadge.innerText = "Sangat Aktif";
+                        statusBadge.className = "badge bg-success px-3 py-2 rounded-pill fw-medium";
+                    } else if(data.persentase >= 75) {
+                        statusBadge.innerText = "Aktif / Baik";
+                        statusBadge.className = "badge bg-primary px-3 py-2 rounded-pill fw-medium";
+                    } else {
+                        statusBadge.innerText = "Perlu Peningkatan";
+                        statusBadge.className = "badge bg-warning text-dark px-3 py-2 rounded-pill fw-medium";
+                    }
+                } else {
+                    document.getElementById('statusKeaktifan').innerText = "Data belum tersedia";
+                }
+            })
+            .catch(err => {
+                console.error("Gagal memuat raport guru", err);
+                document.getElementById('statusKeaktifan').innerText = "Gagal memuat koneksi";
+            });
+        }
 
         function logout() {
             localStorage.clear();
