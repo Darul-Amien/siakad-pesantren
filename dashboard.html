@@ -72,12 +72,12 @@
         <!-- Welcome Banner -->
         <div class="welcome-card p-4 mb-4">
             <span class="badge-pesantren mb-2 d-inline-block">Pondok Pesantren Darul Amien</span>
-            <h2 class="fw-bold text-dark mt-1">Selamat Datang, Bapak/Ibu Guru!</h2>
+            <h2 class="fw-bold text-dark mt-1" id="welcomeMessage">Selamat Datang, Bapak/Ibu Guru!</h2>
             <p class="text-muted mb-0">Panel khusus pengajar — Silakan input nilai dan pantau absensi kelas Anda.</p>
         </div>
 
-        <!-- Daftar Menu Card -->
-        <div class="row g-4">
+        <!-- Daftar Menu Card Khusus Guru -->
+        <div class="row g-4" id="guruMenuList">
             
             <!-- Card Manajemen Nilai -->
             <div class="col-md-6">
@@ -122,6 +122,16 @@
     </div>
 
     <script>
+        // Cek nama user yang aktif dari sesi login
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const namaUser = localStorage.getItem("namaUser");
+            const userRole = localStorage.getItem("userRole");
+
+            if (namaUser && namaUser !== "admin" && namaUser !== "Administrator") {
+                document.getElementById('welcomeMessage').innerText = `Selamat Datang, ${namaUser}!`;
+            }
+        });
+
         function logout() {
             localStorage.clear();
             window.location.href = "login.html";
