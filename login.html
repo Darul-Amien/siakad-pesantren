@@ -118,27 +118,29 @@
 
                 if (data.status === "success") {
                     const userLower = user.toLowerCase();
+                    const roleUser = data.role ? data.role.toLowerCase().trim() : "";
+                    const namaLengkap = data.nama || user;
 
                     // Pengarahan halaman berdasarkan role atau username khusus
                     if (userLower === "admin_pembayaran") {
                         window.location.href = urlAppPembayaran;
                     } else if (userLower === "admin_uks") {
                         window.location.href = urlAppUks;
-                    } else if (data.role.toLowerCase() === "admin") {
+                    } else if (roleUser === "admin") {
                         localStorage.setItem("userRole", "admin");
-                        localStorage.setItem("namaUser", user);
+                        localStorage.setItem("namaUser", namaLengkap);
                         window.location.href = "dashboard-admin.html";
-                    } else if (data.role.toLowerCase() === "walikelas" || data.role.toLowerCase() === "wali_kelas") {
+                    } else if (roleUser === "walikelas" || roleUser === "wali_kelas") {
                         localStorage.setItem("userRole", "walikelas");
-                        localStorage.setItem("namaUser", user);
+                        localStorage.setItem("namaUser", namaLengkap);
                         window.location.href = "dashboard-wali-kelas.html";
-                    } else if (data.role.toLowerCase() === "santri") {
+                    } else if (roleUser === "santri" || roleUser === "siswa") {
                         localStorage.setItem("userRole", "santri");
-                        localStorage.setItem("namaUser", user);
+                        localStorage.setItem("namaUser", namaLengkap);
                         window.location.href = "dashboard-santri.html";
                     } else {
                         localStorage.setItem("userRole", "guru");
-                        localStorage.setItem("namaUser", user);
+                        localStorage.setItem("namaUser", namaLengkap);
                         window.location.href = "dashboard-guru.html";
                     }
                 } else {
@@ -152,9 +154,9 @@
                     window.location.href = urlAppPembayaran;
                 } else if (userLower === "admin_uks") {
                     window.location.href = urlAppUks;
-                } else if (userLower === "admin") {
+                } else if (userLower === "admin" || userLower === "admin_pusat") {
                     localStorage.setItem("userRole", "admin");
-                    // Diperbarui ke dashboard-admin.html agar konsisten
+                    localStorage.setItem("namaUser", user);
                     window.location.href = "dashboard-admin.html";
                 } else {
                     localStorage.setItem("userRole", "guru");
