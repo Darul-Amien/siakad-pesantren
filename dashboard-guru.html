@@ -101,6 +101,20 @@
             height: 12px;
             border-radius: 10px;
         }
+        .announcement-item {
+            border-left: 3px solid #ffc107;
+            padding-left: 12px;
+            margin-bottom: 12px;
+        }
+        .calendar-badge {
+            background-color: #e8f5e9;
+            color: #198754;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 8px 12px;
+            text-align: center;
+            min-width: 60px;
+        }
     </style>
 </head>
 <body onload="loadRaportGuru()">
@@ -174,10 +188,10 @@
             <div class="welcome-card p-4 mb-4">
                 <span class="badge-pesantren mb-2 d-inline-block">Pondok Pesantren Darul Amien</span>
                 <h2 class="fw-bold text-dark mt-1" id="welcomeMessage">Selamat Datang, Bapak/Ibu Guru!</h2>
-                <p class="text-muted mb-0">Panel khusus pengajar — Silakan input nilai, pantau absensi, serta tinjau keaktifan mengajar Anda.</p>
+                <p class="text-muted mb-0">Panel khusus pengajar — Pantau informasi penting pesantren, kalender kegiatan, serta keaktifan mengajar Anda.</p>
             </div>
 
-            <!-- WIDGET UTAMA: Raport Keaktifan Mengajar -->
+            <!-- WIDGET 1: Raport Keaktifan Mengajar Bulanan -->
             <div class="row mb-4">
                 <div class="col-md-12">
                     <div class="content-card p-4 border-start border-success border-4">
@@ -208,49 +222,63 @@
                 </div>
             </div>
 
-            <!-- Daftar Menu Card Khusus Guru -->
-            <div class="row g-4">
-                <!-- Card Manajemen Nilai -->
+            <!-- WIDGET 2: Informasi/Pengumuman & Kalender Akademik -->
+            <div class="row g-4 mb-4">
+                <!-- Kolom Pengumuman Pesantren -->
                 <div class="col-md-6">
                     <div class="content-card p-4">
-                        <h5 class="fw-bold text-success mb-2">
-                            <i class="fas fa-book-open me-2"></i> Manajemen Akademik
+                        <h5 class="fw-bold text-success mb-3">
+                            <i class="fas fa-bullhorn me-2"></i> Pengumuman & Informasi
                         </h5>
-                        <p class="text-muted small mb-4">
-                            Kelola data nilai ujian, rekap absensi harian, dan rapor santri.
-                        </p>
-                        <div>
-                            <a href="https://script.google.com/macros/s/AKfycbyrPg0HDG9MGDcFgIwosx9WELezCxWoHqPcI_8f2sOYp5uDK0Eml4cWGr7PH9sX9k9x3g/exec" 
-                               target="_blank" 
-                               class="btn btn-outline-green shadow-sm">
-                                Buka Menu Nilai
-                            </a>
+                        
+                        <div class="announcement-item">
+                            <h6 class="fw-bold text-dark mb-1">Pengumpulan Nilai Ujian Semester</h6>
+                            <p class="text-muted small mb-1">Batas akhir penginputan nilai rapor santri melalui sistem selambat-lambatnya akhir pekan ini.</p>
+                            <span class="badge bg-light text-secondary font-monospace" style="font-size: 0.7rem;"><i class="far fa-clock me-1"></i> Hari ini</span>
+                        </div>
+
+                        <div class="announcement-item border-start border-success">
+                            <h6 class="fw-bold text-dark mb-1">Rapat Koordinasi Dewan Guru</h6>
+                            <p class="text-muted small mb-1">Diharapkan kehadiran seluruh guru pengampu pada rapat evaluasi bulanan di Aula Utama pukul 14.00 WIB.</p>
+                            <span class="badge bg-light text-secondary font-monospace" style="font-size: 0.7rem;"><i class="far fa-clock me-1"></i> 2 Hari yang lalu</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Card Manajemen Poin Akademik -->
+                <!-- Kolom Kalender Akademik -->
                 <div class="col-md-6">
                     <div class="content-card p-4">
-                        <h5 class="fw-bold text-success mb-2">
-                            <i class="fas fa-award me-2"></i> Poin & Prestasi Akademik
+                        <h5 class="fw-bold text-success mb-3">
+                            <i class="fas fa-calendar-alt me-2"></i> Kalender Akademik Terdekat
                         </h5>
-                        <p class="text-muted small mb-4">
-                            Kelola pencatatan poin pelanggaran, kedisiplinan, serta prestasi santri.
-                        </p>
-                        <div>
-                            <a href="https://script.google.com/macros/s/AKfycbwp1t3nZjQHDIKqwXtU0qsT0dVKQZd0YX4RqJti4aTUHCcKXI-dzmypB4WI7jW3ymXR/exec" 
-                               target="_blank" 
-                               class="btn btn-outline-green shadow-sm">
-                                Buka Menu Poin Akademik
-                            </a>
+
+                        <div class="d-flex align-items-center mb-3 pb-2 border-bottom">
+                            <div class="calendar-badge me-3">
+                                <span class="d-block fs-6 fw-bold">10</span>
+                                <small class="d-block" style="font-size: 0.65rem;">OKT</small>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold text-dark mb-0">Ujian Tengah Semester (UTS)</h6>
+                                <small class="text-muted">Pelaksanaan UTS ganjil seluruh tingkat santri.</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="calendar-badge me-3 bg-opacity-10 bg-success">
+                                <span class="d-block fs-6 fw-bold">25</span>
+                                <small class="d-block" style="font-size: 0.65rem;">OKT</small>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold text-dark mb-0">Pekan Evaluasi & Pesantren Kilat</h6>
+                                <small class="text-muted">Agenda rutin pembinaan karakter santri.</small>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Card Keamanan Akun & Ubah Password -->
-            <div class="row g-4 mt-2">
+            <div class="row g-4">
                 <div class="col-md-12">
                     <div class="content-card p-4">
                         <h5 class="fw-bold text-success mb-2">
@@ -286,8 +314,7 @@
 
     <!-- Script JavaScript -->
     <script>
-        // URL Web App New Deployment Terbaru Anda
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwLrwImNVhYxMmOg1nzVWlwbhhK4dWAyuaLZYW05pC3OlX0ktrjUn3cC232ZvkA5i6I/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzV5ns_zrN5-AgiSyJi8DcgSj6eIlJrKPA5e2ibP0YRXPinMkaT0OffWZ9ciWVKupRk/exec';
 
         window.addEventListener('DOMContentLoaded', (event) => {
             const namaUser = localStorage.getItem("namaUser");
@@ -297,7 +324,6 @@
             }
         });
 
-        // Fungsi mengambil data raport keaktifan guru secara otomatis berdasarkan nama login
         function loadRaportGuru() {
             const namaUser = localStorage.getItem("namaUser") || "";
 
@@ -342,7 +368,6 @@
             });
         }
 
-        // Fungsi Ubah Password Mandiri
         function ubahPassword() {
             const username = localStorage.getItem("namaUser");
             const oldPass = document.getElementById('oldPassword').value.trim();
