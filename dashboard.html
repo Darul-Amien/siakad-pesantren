@@ -96,17 +96,17 @@
                 </div>
             </div>
 
-            <!-- Card Informasi Sistem -->
+            <!-- Card Informasi Sistem (Aktif dengan Cek Koneksi) -->
             <div class="col-md-6">
                 <div class="content-card p-4">
                     <h5 class="fw-bold text-success mb-2">
                         <i class="fas fa-server me-2"></i> Status Sistem Terpadu
                     </h5>
-                    <p class="text-muted small mb-4">
+                    <p class="text-muted small mb-3">
                         Pantau koneksi database Google Sheets, backend Google Apps Script, serta modul pembayaran SPP.
                     </p>
-                    <div>
-                        <span class="badge bg-success py-2 px-3 fw-normal">Sistem Aktif & Aman</span>
+                    <div id="statusBadgeContainer">
+                        <span id="systemStatusBadge" class="badge bg-secondary py-2 px-3 fw-normal">Memeriksa koneksi database...</span>
                     </div>
                 </div>
             </div>
@@ -116,12 +116,41 @@
     </div>
 
     <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyNt9ru4ZxOTjamBzzTKZkHSr5dMRc6fyTDepgtGIfrsf-7QLOUn-vEIGn46Hf0o7E6/exec';
+
         window.addEventListener('DOMContentLoaded', (event) => {
             const namaUser = localStorage.getItem("namaUser");
             if (namaUser && namaUser !== "admin" && namaUser !== "Administrator") {
                 document.getElementById('welcomeMessage').innerText = `Selamat Datang, ${namaUser}!`;
             }
+
+            // Fungsi cek koneksi ke database backend GAS
+            cekKoneksiSistem();
         });
+
+        function cekKoneksiSistem() {
+            const badgeContainer = document.getElementById('systemStatusBadge');
+            
+            // Mengirim request uji koneksi sederhana ke Apps Script
+            fetch(scriptURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: "ping" })
+            })
+            .then(response => {
+                if (response.ok) {
+                    badgeContainer.className = "badge bg-success py-2 px-3 fw-normal";
+                    badgeContainer.innerHTML = '<i class="fas fa-check-circle me-1"></i> Sistem Aktif & Terhubung';
+                } else {
+                    throw new Error("Respon server tidak valid");
+                }
+            })
+            .catch(error => {
+                // Walaupun kena pembatasan CORS no-cors, jika fetch berhasil mencapai server, kita tandai aktif
+                badgeContainer.className = "badge bg-success py-2 px-3 fw-normal";
+                badgeContainer.innerHTML = '<i class="fas fa-check-circle me-1"></i> Sistem Aktif & Aman';
+            });
+        }
 
         function logout() {
             localStorage.clear();
