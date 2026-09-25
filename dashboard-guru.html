@@ -340,13 +340,9 @@
             });
         }
 
-        // Fungsi Baru untuk Mengambil Data Pengumuman & Kalender dari Google Sheets
+        // Fungsi Diperbarui: Mengambil Data Pengumuman & Kalender via GET (Sesuai doGet di code.gs)
         function loadInfoAkademik() {
-            fetch(scriptURL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ action: "getInfoAkademik" })
-            })
+            fetch(scriptURL + "?action=getInfoAkademik")
             .then(res => res.json())
             .then(data => {
                 if(data.status === "success") {
@@ -394,7 +390,11 @@
                     }
                 }
             })
-            .catch(err => console.error("Gagal memuat info akademik:", err));
+            .catch(err => {
+                console.error("Gagal memuat info akademik:", err);
+                document.getElementById('containerPengumuman').innerHTML = `<p class="text-danger small">Gagal memuat data.</p>`;
+                document.getElementById('containerKalender').innerHTML = `<p class="text-danger small">Gagal memuat data.</p>`;
+            });
         }
 
         function ubahPassword() {
