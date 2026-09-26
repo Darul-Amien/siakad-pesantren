@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Tunggakan - PDF Darul Amien</title>
+<style>
+  :root {
+    --hijau: #0f766e;
+    --hijau-gelap: #115e59;
+    --merah: #dc2626;
+    --bg: #f1f5f9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--bg);
+    color: #1e293b;
+  }
+  header {
+    background: linear-gradient(135deg, var(--hijau), var(--hijau-gelap));
+    color: #fff;
+    padding: 28px 16px;
+    text-align: center;
+  }
+  header h1 { margin: 0 0 4px; font-size: 1.4rem; }
+  header p { margin: 0; opacity: .9; font-size: .9rem; }
+
+  .container { max-width: 900px; margin: -20px auto 40px; padding: 0 16px; }
+
+  .ringkasan {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .kartu {
+    flex: 1 1 200px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px 18px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.06);
+  }
+  .kartu .label { font-size: .78rem; color: #64748b; text-transform: uppercase; letter-spacing: .04em; }
+  .kartu .nilai { font-size: 1.35rem; font-weight: 700; margin-top: 4px; color: var(--hijau-gelap); }
+  .kartu .nilai.merah { color: var(--merah); }
+
+  .kotak-tabel {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.06);
+    overflow: hidden;
+  }
+  .cari {
+    padding: 14px 16px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .cari input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: .95rem;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  thead th {
+    text-align: left;
+    background: #f8fafc;
+    padding: 10px 14px;
+    color: #475569;
+    font-weight: 600;
+    border-bottom: 2px solid #e2e8f0;
+    white-space: nowrap;
+  }
+  tbody td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: top;
+  }
+  tbody tr:hover { background: #f8fafc; }
+  .nominal { font-weight: 700; color: var(--merah); white-space: nowrap; }
+  .rincian { color: #64748b; font-size: .82rem; }
+  .status-kosong, .status-loading, .status-error {
+    padding: 30px 16px;
+    text-align: center;
+    color: #64748b;
+  }
+  .status-error { color: var(--merah); }
+  footer {
+    text-align: center;
+    font-size: .78rem;
+    color: #94a3b8;
+    padding: 20px;
+  }
+  .table-scroll { overflow-x: auto; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Info Tunggakan Pembayaran</h1>
+  <p>Pondok Darul Amien &mdash; data diperbarui otomatis dari sistem keuangan</p>
+</header>
+
+<div class="container">
+
+  <div class="ringkasan">
+    <div class="kartu">
+      <div class="label">Santri Menunggak</div>
+      <div class="nilai" id="jumlahSantri">-</div>
+    </div>
+    <div class="kartu">
+      <div class="label">Total Tunggakan</div>
+      <div class="nilai merah" id="totalTunggakan">-</div>
+    </div>
+    <div class="kartu">
+      <div class="label">Terakhir Diperbarui</div>
+      <div class="nilai" id="terakhirUpdate" style="font-size:1rem;">-</div>
+    </div>
+  </div>
+
+  <div class="kotak-tabel">
+    <div class="cari">
+      <input type="text" id="inputCari" placeholder="Cari nama santri atau kelas...">
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Nama Santri</th>
+            <th>Kelas</th>
+            <th>Tunggakan SPP</th>
+            <th>Tunggakan Kost Dapur</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="bodyTabel">
+          <tr><td colspan="5" class="status-loading">Memuat data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>Data ini hanya menampilkan informasi tunggakan pembayaran. Data pribadi lain tidak ditampilkan di halaman ini.</footer>
+</div>
+
+<script>
+  // ==========================================================================
+  // GANTI URL DI BAWAH INI dengan URL Web App Google Apps Script Anda,
+  // lalu tambahkan "?act=tunggakan" di belakangnya.
+  // Contoh: https://script.google.com/macros/s/AKfycbxxxxxxxxxxxxxxxxxxxx/exec?act=tunggakan
+  // ==========================================================================
+  const URL_API = "GANTI_DENGAN_URL_WEBAPP_ANDA/exec?act=tunggakan";
+
+  let dataAsli = [];
+
+  function formatRupiah(angka) {
+    return "Rp " + Number(angka || 0).toLocaleString('id-ID');
+  }
+
+  function renderTabel(list) {
+    const body = document.getElementById('bodyTabel');
+    if (!list || list.length === 0) {
+      body.innerHTML = '<tr><td colspan="5" class="status-kosong">Tidak ada data tunggakan. Alhamdulillah, semua sudah lunas 🎉</td></tr>';
+      return;
+    }
+    body.innerHTML = list.map(s => `
+      <tr>
+        <td>${s.nama}</td>
+        <td>${s.kelas}</td>
+        <td>
+          ${formatRupiah(s.totalSPP)}
+          <div class="rincian">${s.rincianSPP}</div>
+        </td>
+        <td>
+          ${formatRupiah(s.totalKD)}
+          <div class="rincian">${s.rincianKD}</div>
+        </td>
+        <td class="nominal">${formatRupiah(s.totalTunggakan)}</td>
+      </tr>
+    `).join('');
+  }
+
+  async function muatData() {
+    try {
+      const res = await fetch(URL_API);
+      const json = await res.json();
+
+      if (!json.success) {
+        throw new Error(json.error || 'Data tidak valid');
+      }
+
+      dataAsli = json.daftar || [];
+      document.getElementById('jumlahSantri').textContent = json.totalSantriMenunggak ?? 0;
+      document.getElementById('totalTunggakan').textContent = formatRupiah(json.grandTotalTunggakan);
+      document.getElementById('terakhirUpdate').textContent = json.updatedAt || '-';
+
+      renderTabel(dataAsli);
+    } catch (err) {
+      document.getElementById('bodyTabel').innerHTML =
+        '<tr><td colspan="5" class="status-error">Gagal memuat data. Pastikan URL API sudah benar dan Web App sudah di-deploy dengan akses "Anyone". (' + err.message + ')</td></tr>';
+    }
+  }
+
+  document.getElementById('inputCari').addEventListener('input', function (e) {
+    const kata = e.target.value.toLowerCase();
+    const hasil = dataAsli.filter(s =>
+      s.nama.toLowerCase().includes(kata) || s.kelas.toLowerCase().includes(kata)
+    );
+    renderTabel(hasil);
+  });
+
+  muatData();
+</script>
+
+</body>
+</html>
