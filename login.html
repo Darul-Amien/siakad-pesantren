@@ -85,32 +85,42 @@
 
         function redirectByRole(userLower, roleUser, namaLengkap) {
             if (userLower === "admin_pembayaran") {
+                // Untuk aplikasi eksternal (Google Apps Script Web App), set status login juga
+                localStorage.setItem("isLoggedIn", "true");
+                localStorage.setItem("userRole", "admin_pembayaran");
                 window.location.href = urlAppPembayaran;
                 return true;
             } else if (userLower === "admin_uks") {
+                localStorage.setItem("isLoggedIn", "true");
+                localStorage.setItem("userRole", "admin_uks");
                 window.location.href = urlAppUks;
                 return true;
             } else if (roleUser === "admin" || userLower === "admin_pusat") {
+                localStorage.setItem("isLoggedIn", "true"); // <-- Ditambahkan agar lolos validasi dashboard
                 localStorage.setItem("userRole", "admin");
                 localStorage.setItem("namaUser", namaLengkap);
                 window.location.href = "dashboard-admin.html";
                 return true;
             } else if (roleUser === "walikelas" || roleUser === "wali_kelas") {
+                localStorage.setItem("isLoggedIn", "true"); // <-- Ditambahkan
                 localStorage.setItem("userRole", "walikelas");
                 localStorage.setItem("namaUser", namaLengkap);
                 window.location.href = "dashboard-wali-kelas.html";
                 return true;
             } else if (roleUser === "santri" || roleUser === "siswa") {
+                localStorage.setItem("isLoggedIn", "true"); // <-- Ditambahkan
                 localStorage.setItem("userRole", "santri");
                 localStorage.setItem("namaUser", namaLengkap);
                 window.location.href = "dashboard-santri.html";
                 return true;
             } else if (roleUser === "guru" || roleUser === "pengajar") {
+                localStorage.setItem("isLoggedIn", "true"); // <-- Ditambahkan
                 localStorage.setItem("userRole", "guru");
                 localStorage.setItem("namaUser", namaLengkap);
                 window.location.href = "dashboard-guru.html";
                 return true;
             } else if (roleUser === "gerbang") {
+                localStorage.setItem("isLoggedIn", "true"); // <-- Ditambahkan
                 localStorage.setItem("userRole", "gerbang");
                 localStorage.setItem("namaUser", namaLengkap);
                 window.location.href = "dashboard-gerbang.html";
