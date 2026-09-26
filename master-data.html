@@ -47,7 +47,7 @@
 </head>
 <body class="bg-light" onload="loadUsers()">
 
-    <!-- Navbar (Diperbarui mengarah ke dashboard-admin.html) -->
+    <!-- Navbar -->
     <nav class="navbar navbar-dark bg-custom-green shadow-sm px-4">
         <div class="container-fluid">
             <a class="navbar-brand fw-bold text-white" href="dashboard-admin.html"><i class="fas fa-arrow-left me-2"></i>Kembali ke Dashboard Admin</a>
@@ -58,11 +58,11 @@
     <div class="container my-5">
         <div class="row justify-content-center">
 
-            <!-- Form Tambah Pengguna -->
-            <div class="col-md-10 mb-5">
+            <!-- Card 1: Form Tambah Pengguna Satuan -->
+            <div class="col-md-10 mb-4">
                 <div class="card border-0 shadow-sm rounded-4 p-4">
                     <h3 class="fw-bold text-success mb-3"><i class="fas fa-user-plus me-2"></i>Tambah Pengguna Baru</h3>
-                    <p class="text-muted mb-4">Daftarkan akun guru, wali kelas, santri, admin, atau petugas gerbang baru ke dalam database SIAKAD.</p>
+                    <p class="text-muted mb-4">Daftarkan akun guru, wali kelas, santri, admin, atau petugas gerbang baru secara satuan ke dalam database SIAKAD.</p>
 
                     <form id="userForm" onsubmit="submitData(event)">
                         <div class="row">
@@ -100,6 +100,29 @@
                         </div>
                     </form>
                     <div id="statusMsg" class="mt-3"></div>
+                </div>
+            </div>
+
+            <!-- Card 2: Impor Pengguna Masal (Excel/CSV) -->
+            <div class="col-md-10 mb-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4">
+                    <h3 class="fw-bold text-success mb-3"><i class="fas fa-file-excel me-2"></i>Impor Pengguna Masal (Excel/CSV)</h3>
+                    <p class="text-muted mb-4">Unduh template CSV terlebih dahulu, isi data pengguna, lalu unggah file tersebut untuk mendaftarkan banyak akun sekaligus secara otomatis.</p>
+
+                    <div class="row align-items-center g-3">
+                        <div class="col-md-6">
+                            <button type="button" onclick="downloadTemplate()" class="btn btn-outline-success w-100 py-2 rounded-pill fw-semibold">
+                                <i class="fas fa-download me-2"></i> Unduh Template CSV
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="file" id="csvFileInput" accept=".csv" class="form-control mb-2 p-2">
+                            <button type="button" onclick="uploadCSV()" class="btn btn-success w-100 py-2 rounded-pill bg-custom-green fw-semibold" id="btnUpload">
+                                <i class="fas fa-upload me-2"></i> Unggah & Proses Data Masal
+                            </button>
+                        </div>
+                    </div>
+                    <div id="importStatusMsg" class="mt-3"></div>
                 </div>
             </div>
 
@@ -141,10 +164,10 @@
 
     <!-- Script JavaScript -->
     <script>
-        // URL Web App New Deployment Anda
+        // URL Web App Google Apps Script Anda
         const scriptURL = 'https://script.google.com/macros/s/AKfycbxuTp1ajC05r5a3Pg3MiBMF14Mx0Ykv2O0MmAYYvWqDm0qWDkvbOOClFI4CUhKlN0iy/exec';
 
-        // Fungsi Tambah Pengguna
+        // 1. Fungsi Tambah Pengguna Satuan
         function submitData(event) {
             event.preventDefault();
             const btnSimpan = document.getElementById('btnSimpan');
@@ -181,7 +204,103 @@
             });
         }
 
-        // Fungsi Memuat Data Tabel Secara Real-Time via GET
+        // 2. Fungsi Mengunduh Template CSV
+        function downloadTemplate() {
+            const csvContent = "nama,username,password,role\n" +
+                               "Ahmad Zaini,santri01,123456,santri\n" +
+                               "Ustadz Luqman,guru01,passwordguru,guru\n" +
+                               "Siti Aminah,walikelas01,passwali,walikelas";
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "template_user_siakad.csv";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // 3. Fungsi Membaca File CSV yang Diunggah
+        function uploadCSV() {
+            const fileInput = document.getElementById('csvFileInput');
+            const statusMsg = document.getElementById('importStatusMsg');
+            const btnUpload = document.getElementById('btnUpload');
+
+            if (fileInput.files.length === 0) {
+                alert("Pilih file CSV terlebih dahulu!");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const text = e.target.result;
+                processCSVData(text);
+            };
+
+            reader.readAsText(file);
+        }
+
+        // 4. Memproses Baris CSV dan Mengirimkannya ke Backend Apps Script
+        function processCSVData(csvText) {
+            const statusMsg = document.getElementById('importStatusMsg');
+            const btnUpload = document.getElementById('btnUpload');
+
+            const lines = csvText.split(/\r\n|\n/);
+            let usersList = [];
+
+            // Mulai dari i = 1 untuk melewati baris header (nama,username,password,role)
+            for (let i = 1; i < lines.length; i++) {
+                let line = lines[i].trim();
+                if (line) {
+                    let cols = line.split(',');
+                    if (cols.length >= 4) {
+                        usersList.push({
+                            nama: cols[0].trim(),
+                            username: cols[1].trim(),
+                            password: cols[2].trim(),
+                            role: cols[3].trim().toLowerCase()
+                        });
+                    }
+                }
+            }
+
+            if (usersList.length === 0) {
+                statusMsg.innerHTML = `<div class="alert alert-danger py-2 small">File CSV kosong atau format kolom tidak sesuai!</div>`;
+                return;
+            }
+
+            btnUpload.innerText = `Mengunggah ${usersList.length} data...`;
+            btnUpload.disabled = true;
+
+            const payload = {
+                action: "bulkRegister",
+                users: usersList
+            };
+
+            fetch(scriptURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                statusMsg.innerHTML = `<div class="alert alert-success py-2 small">Berhasil! ${usersList.length} akun pengguna baru berhasil ditambahkan secara masal.</div>`;
+                btnUpload.innerText = "Unggah & Proses Data Masal";
+                btnUpload.disabled = false;
+                document.getElementById('csvFileInput').value = "";
+                loadUsers(); // Refresh tabel otomatis
+            })
+            .catch(error => {
+                statusMsg.innerHTML = `<div class="alert alert-danger py-2 small">Gagal mengunggah: ${error}</div>`;
+                btnUpload.innerText = "Unggah & Proses Data Masal";
+                btnUpload.disabled = false;
+            });
+        }
+
+        // 5. Fungsi Memuat Data Tabel Secara Real-Time via GET
         function loadUsers() {
             const tbody = document.getElementById('userTableBody');
             tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">Memuat data pengguna...</td></tr>`;
@@ -221,7 +340,7 @@
             });
         }
 
-        // Fungsi Hapus Pengguna
+        // 6. Fungsi Hapus Pengguna
         function deleteUser(rowNumber) {
             if (confirm("Apakah Anda yakin ingin menghapus akun pengguna ini?")) {
                 const payload = {
