@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin - SIAKAD Darul Amien</title>
+    <title>Dashboard Gerbang - SIAKAD Darul Amien</title>
     <!-- Google Fonts Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -38,6 +38,23 @@
             height: 100%;
             transition: transform 0.2s ease;
         }
+        .content-card:hover {
+            transform: translateY(-4px);
+        }
+        .icon-circle {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: rgba(25, 135, 84, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+        .icon-circle i {
+            font-size: 1.5rem;
+            color: #198754;
+        }
         .btn-custom-green {
             background-color: #198754 !important;
             border-color: #198754 !important;
@@ -57,7 +74,7 @@
     <nav class="navbar navbar-dark navbar-custom px-4 shadow-sm">
         <div class="container-fluid">
             <span class="navbar-brand mb-0 h1 fw-bold">
-                <i class="fas fa-graduation-cap me-2"></i> SIAKAD Darul Amien (Admin Panel)
+                <i class="fas fa-door-open me-2"></i> SIAKAD Darul Amien (Gerbang)
             </span>
             <button onclick="logout()" class="btn btn-outline-light btn-sm rounded-pill px-3">
                 <i class="fas fa-sign-out-alt me-1"></i> Keluar
@@ -67,73 +84,73 @@
 
     <!-- Main Content Container -->
     <div class="container my-5">
-        
+
         <!-- Welcome Banner -->
         <div class="welcome-card p-4 mb-4">
             <span class="badge-pesantren mb-2 d-inline-block">Pondok Pesantren Darul Amien</span>
-            <h2 class="fw-bold text-dark mt-1" id="welcomeMessage">Selamat Datang, Administrator!</h2>
-            <p class="text-muted mb-0">Panel kontrol utama — Kelola data pengguna, hak akses, dan konfigurasi sistem SIAKAD.</p>
+            <h2 class="fw-bold text-dark mt-1" id="welcomeMessage">Selamat Datang, Petugas Gerbang!</h2>
+            <p class="text-muted mb-0">Panel gerbang — Pindai kartu santri, lacak posisi, dan kelola kartu identitas santri.</p>
         </div>
 
-        <!-- Daftar Menu / Kartu Admin -->
+        <!-- Daftar Menu / Kartu Gerbang -->
         <div class="row g-4">
-            
-            <!-- Kartu 1: Kelola Pengguna & Master Data (Asli Anda) -->
+
+            <!-- Kartu 1: Scan Kartu Santri -->
             <div class="col-md-4">
                 <div class="content-card p-4 d-flex flex-column justify-content-between">
                     <div>
-                        <h5 class="fw-bold text-success mb-2">
-                            <i class="fas fa-users-cog me-2"></i> Kelola Pengguna & Master Data
-                        </h5>
+                        <div class="icon-circle">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <h5 class="fw-bold text-success mb-2">Scan Kartu Santri</h5>
                         <p class="text-muted small mb-4">
-                            Tambah, edit, atau hapus akun pengguna (admin, guru, santri) yang terhubung ke database spreadsheet.
+                            Pindai kartu identitas santri untuk mencatat waktu masuk atau keluar gerbang secara otomatis.
                         </p>
                     </div>
                     <div>
-                        <a href="master-data.html" class="btn btn-custom-green shadow-sm w-100">
-                            Buka Master Data
+                        <a href="scan-kartu.html" class="btn btn-custom-green shadow-sm w-100">
+                            Buka Scan Kartu
                         </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Kartu 2: Input Keaktifan Mengajar Guru (Baru / Tautan ke Spreadsheet) -->
+            <!-- Kartu 2: Lacak Posisi Santri -->
             <div class="col-md-4">
                 <div class="content-card p-4 d-flex flex-column justify-content-between">
                     <div>
-                        <h5 class="fw-bold text-success mb-2">
-                            <i class="fas fa-file-excel me-2"></i> Input Keaktifan Mengajar
-                        </h5>
+                        <div class="icon-circle">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h5 class="fw-bold text-success mb-2">Lacak Posisi Santri</h5>
                         <p class="text-muted small mb-4">
-                            Akses spreadsheet rekap harian guru untuk menginput data realisasi mengajar secara langsung.
+                            Lihat riwayat dan status posisi santri terkini berdasarkan catatan keluar-masuk gerbang.
                         </p>
                     </div>
                     <div>
-                        <!-- Ganti URL_SPREADSHEET_ANDA dengan link Google Spreadsheet Raport Keaktifan Guru Anda -->
-                        <a href="https://docs.google.com/spreadsheets/d/1gmC8-w4UKRleeTnKHWTtur6QCtd_d58UVFbOmHF-aOo/edit" 
-                           target="_blank" 
-                           class="btn btn-custom-green shadow-sm w-100">
-                            Buka Spreadsheet Rekap
+                        <a href="lacak-posisi.html" class="btn btn-custom-green shadow-sm w-100">
+                            Buka Pelacakan
                         </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Kartu 3: Status Sistem Terpadu (Asli Anda) -->
+            <!-- Kartu 3: Buat Kartu Santri -->
             <div class="col-md-4">
                 <div class="content-card p-4 d-flex flex-column justify-content-between">
                     <div>
-                        <h5 class="fw-bold text-success mb-2">
-                            <i class="fas fa-server me-2"></i> Status Sistem Terpadu
-                        </h5>
+                        <div class="icon-circle">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        <h5 class="fw-bold text-success mb-2">Buat Kartu Santri</h5>
                         <p class="text-muted small mb-4">
-                            Pantau koneksi database Google Sheets, backend Google Apps Script, serta modul pembayaran SPP.
+                            Cetak atau terbitkan kartu identitas baru untuk santri yang belum memiliki kartu.
                         </p>
                     </div>
                     <div>
-                        <button class="btn btn-success btn-sm rounded-pill px-3 w-100 py-2 disabled" style="background-color: #198754;">
-                            <i class="fas fa-check-circle me-1"></i> Sistem Aktif & Aman
-                        </button>
+                        <a href="buat-kartu.html" class="btn btn-custom-green shadow-sm w-100">
+                            Buka Buat Kartu
+                        </a>
                     </div>
                 </div>
             </div>
@@ -146,7 +163,7 @@
     <script>
         window.addEventListener('DOMContentLoaded', (event) => {
             const namaUser = localStorage.getItem("namaUser");
-            if (namaUser && namaUser !== "admin" && namaUser !== "Administrator") {
+            if (namaUser) {
                 document.getElementById('welcomeMessage').innerText = `Selamat Datang, ${namaUser}!`;
             }
         });
