@@ -138,11 +138,11 @@
                         localStorage.setItem("userRole", "santri");
                         localStorage.setItem("namaUser", namaLengkap);
                         window.location.href = "dashboard-santri.html";
-                    } else {
+                    } else if (roleUser === "guru" || roleUser === "guru") {
                         localStorage.setItem("userRole", "guru");
                         localStorage.setItem("namaUser", namaLengkap);
                         window.location.href = "dashboard-guru.html";
-                    } else {
+                    } else if (roleUser === "gerbang" || roleUser === "gerbang") {
                         localStorage.setItem("userRole", "gerbang");
                         localStorage.setItem("namaUser", namaLengkap);
                         window.location.href = "dashboard-gerbang.html";
@@ -164,11 +164,11 @@
                     localStorage.setItem("userRole", "admin");
                     localStorage.setItem("namaUser", user);
                     window.location.href = "dashboard-admin.html";
-                } else {
+                } else if (userLower === "guru" || userLower === "guru") {
                     localStorage.setItem("userRole", "guru");
                     localStorage.setItem("namaUser", user);
                     window.location.href = "dashboard-guru.html";
-                } else {
+                } else if (userLower === "gerbang" || userLower === "gerbang") {
                     localStorage.setItem("userRole", "gerbang");
                     localStorage.setItem("namaUser", user);
                     window.location.href = "dashboard-gerbang.html";
