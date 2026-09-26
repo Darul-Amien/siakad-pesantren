@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Tunggakan - Pondok Pesantren Darul Amien</title>
+<title>Dashboard Tunggakan - PDF Darul Amien</title>
 <style>
   :root {
     --hijau: #0f766e;
@@ -63,6 +63,59 @@
     border-radius: 8px;
     font-size: .95rem;
   }
+  .panel-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-end;
+    padding: 14px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+  }
+  .filter-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 140px;
+  }
+  .filter-item label {
+    font-size: .75rem;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+  }
+  .filter-item select {
+    padding: 8px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: .88rem;
+    background: #fff;
+    color: #1e293b;
+  }
+  .filter-tombol {
+    flex-direction: row;
+    gap: 8px;
+    min-width: unset;
+  }
+  .btn-terapkan, .btn-reset {
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-size: .85rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-terapkan {
+    background: var(--hijau);
+    color: #fff;
+  }
+  .btn-terapkan:hover { background: var(--hijau-gelap); }
+  .btn-reset {
+    background: #e2e8f0;
+    color: #475569;
+  }
+  .btn-reset:hover { background: #cbd5e1; }
   table { width: 100%; border-collapse: collapse; font-size: .88rem; }
   thead th {
     text-align: left;
@@ -124,6 +177,30 @@
     <div class="cari">
       <input type="text" id="inputCari" placeholder="Cari nama santri atau kelas...">
     </div>
+    <div class="panel-filter">
+      <div class="filter-item">
+        <label>Kelas</label>
+        <select id="filterKelas">
+          <option value="">Semua Kelas</option>
+        </select>
+      </div>
+      <div class="filter-item">
+        <label>Dari Bulan</label>
+        <select id="filterBulanDari">
+          <option value="">Semua</option>
+        </select>
+      </div>
+      <div class="filter-item">
+        <label>Sampai Bulan</label>
+        <select id="filterBulanSampai">
+          <option value="">Semua</option>
+        </select>
+      </div>
+      <div class="filter-item filter-tombol">
+        <button id="btnTerapkan" class="btn-terapkan">Terapkan Filter</button>
+        <button id="btnReset" class="btn-reset">Reset</button>
+      </div>
+    </div>
     <div class="table-scroll">
       <table>
         <thead>
@@ -148,10 +225,16 @@
 <script>
   // ==========================================================================
   // GANTI URL DI BAWAH INI dengan URL Web App Google Apps Script Anda,
-  // lalu tambahkan "?act=tunggakan" di belakangnya.
-  // Contoh: https://script.google.com/macros/s/AKfycbxxxxxxxxxxxxxxxxxxxx/exec?act=tunggakan
+  // TANPA "?act=tunggakan" (parameter akan ditambahkan otomatis oleh script).
+  // Contoh: https://script.google.com/macros/s/AKfycbxxxxxxxxxxxxxxxxxxxx/exec
   // ==========================================================================
-  const URL_API = "https://script.google.com/macros/s/AKfycbxL3XmgGvcEUrgPkFx9OMUzGQ9aFhzBB2dXFMrYpgnDsPyXb6Nnj6xBgXKLAjnH1R0E/exec?act=tunggakan";
+  const URL_WEBAPP = "GANTI_DENGAN_URL_WEBAPP_ANDA/exec";
+
+  const LIST_BULAN = [
+    "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER",
+    "NOVEMBER", "DESEMBER", "JANUARI", "FEBRUARI",
+    "MARET", "APRIL", "MEI", "JUNI"
+  ];
 
   let dataAsli = [];
 
@@ -162,7 +245,7 @@
   function renderTabel(list) {
     const body = document.getElementById('bodyTabel');
     if (!list || list.length === 0) {
-      body.innerHTML = '<tr><td colspan="5" class="status-kosong">Tidak ada data tunggakan. Alhamdulillah, semua sudah lunas 🎉</td></tr>';
+      body.innerHTML = '<tr><td colspan="5" class="status-kosong">Tidak ada data tunggakan untuk filter ini. Alhamdulillah 🎉</td></tr>';
       return;
     }
     body.innerHTML = list.map(s => `
@@ -182,9 +265,46 @@
     `).join('');
   }
 
-  async function muatData() {
+  // Isi dropdown Kelas berdasarkan data yang benar-benar ada (bukan hardcode)
+  function isiDropdownKelas(list) {
+    const select = document.getElementById('filterKelas');
+    const kelasSet = new Set();
+    list.forEach(s => { if (s.kelas && s.kelas !== '-') kelasSet.add(s.kelas); });
+    const kelasSorted = Array.from(kelasSet).sort((a, b) =>
+      a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
+    );
+    const nilaiTerpilih = select.value;
+    select.innerHTML = '<option value="">Semua Kelas</option>' +
+      kelasSorted.map(k => `<option value="${k}">${k}</option>`).join('');
+    select.value = nilaiTerpilih || '';
+  }
+
+  function isiDropdownBulan() {
+    const opsiBulan = '<option value="">Semua</option>' +
+      LIST_BULAN.map(b => `<option value="${b}">${b.charAt(0) + b.slice(1).toLowerCase()}</option>`).join('');
+    document.getElementById('filterBulanDari').innerHTML = opsiBulan;
+    document.getElementById('filterBulanSampai').innerHTML = opsiBulan;
+  }
+
+  function bangunUrlDenganFilter() {
+    const kelas = document.getElementById('filterKelas').value;
+    const bulanDari = document.getElementById('filterBulanDari').value;
+    const bulanSampai = document.getElementById('filterBulanSampai').value;
+
+    const params = new URLSearchParams();
+    params.set('act', 'tunggakan');
+    if (kelas) params.set('kelas', kelas);
+    if (bulanDari) params.set('bulanDari', bulanDari);
+    if (bulanSampai) params.set('bulanSampai', bulanSampai);
+
+    return URL_WEBAPP + '?' + params.toString();
+  }
+
+  async function muatData(isiUlangDropdownKelas) {
+    const body = document.getElementById('bodyTabel');
+    body.innerHTML = '<tr><td colspan="5" class="status-loading">Memuat data...</td></tr>';
     try {
-      const res = await fetch(URL_API);
+      const res = await fetch(bangunUrlDenganFilter());
       const json = await res.json();
 
       if (!json.success) {
@@ -196,9 +316,10 @@
       document.getElementById('totalTunggakan').textContent = formatRupiah(json.grandTotalTunggakan);
       document.getElementById('terakhirUpdate').textContent = json.updatedAt || '-';
 
+      if (isiUlangDropdownKelas) isiDropdownKelas(dataAsli);
       renderTabel(dataAsli);
     } catch (err) {
-      document.getElementById('bodyTabel').innerHTML =
+      body.innerHTML =
         '<tr><td colspan="5" class="status-error">Gagal memuat data. Pastikan URL API sudah benar dan Web App sudah di-deploy dengan akses "Anyone". (' + err.message + ')</td></tr>';
     }
   }
@@ -211,7 +332,20 @@
     renderTabel(hasil);
   });
 
-  muatData();
+  document.getElementById('btnTerapkan').addEventListener('click', function () {
+    muatData(false);
+  });
+
+  document.getElementById('btnReset').addEventListener('click', function () {
+    document.getElementById('filterKelas').value = '';
+    document.getElementById('filterBulanDari').value = '';
+    document.getElementById('filterBulanSampai').value = '';
+    document.getElementById('inputCari').value = '';
+    muatData(true);
+  });
+
+  isiDropdownBulan();
+  muatData(true); // panggilan pertama: ambil data lengkap sekaligus isi dropdown kelas
 </script>
 
 </body>
