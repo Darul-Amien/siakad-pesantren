@@ -4,6 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard Tunggakan - Pondok Pesantren Darul Amien</title>
+
+<!-- ============================================================
+     PROTEKSI LOGIN
+     Cek apakah user sudah login (localStorage diisi oleh login.html).
+     Kalau belum, langsung dialihkan ke login.html sebelum konten tampil.
+     Diletakkan paling atas <head> agar dicek sebelum halaman dirender.
+     ============================================================ -->
+<script>
+  (function () {
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+      window.location.replace('login.html');
+    }
+  })();
+</script>
+
 <style>
   :root {
     --hijau: #0f766e;
