@@ -41,15 +41,15 @@
             <div class="col-md-5">
                 <div class="card shadow-lg border-0">
                     <div class="card-body p-5 text-center">
-                        
+
                         <!-- Logo Pondok Pesantren Darul Amien -->
                         <img src="LOGO PONDOK.png" alt="Logo Pondok Pesantren Darul Amien" style="width: 80px; height: 80px; object-fit: contain;" class="mb-3 mx-auto d-block">
-                        
+
                         <h3 class="mb-1 text-custom-green fw-bold">
                             SIAKAD<br>Darul Amien
                         </h3>
                         <p class="text-muted mb-4 small">Silakan masuk menggunakan akun Anda</p>
-                        
+
                         <form id="loginForm" onsubmit="handleLogin(event)" class="text-start">
                             <div class="mb-3">
                                 <label for="username" class="form-label fw-medium small">Username / NIS / NIP</label>
@@ -59,7 +59,7 @@
                                 <label for="password" class="form-label fw-medium small">Password</label>
                                 <input type="password" class="form-control p-2" id="password" placeholder="Masukkan password" required>
                             </div>
-                            
+
                             <div id="errorAlert" class="alert alert-danger d-none py-2 small" role="alert">
                                 Username atau Password salah!
                             </div>
@@ -78,10 +78,41 @@
 
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyNt9ru4ZxOTjamBzzTKZkHSr5dMRc6fyTDepgtGIfrsf-7QLOUn-vEIGn46Hf0o7E6/exec';
-        
+
         // URL Web App Aplikasi Terintegrasi
         const urlAppPembayaran = 'https://script.google.com/macros/s/AKfycbxL3XmgGvcEUrgPkFx9OMUzGQ9aFhzBB2dXFMrYpgnDsPyXb6Nnj6xBgXKLAjnH1R0E/exec';
         const urlAppUks = 'https://script.google.com/macros/s/AKfycbw8k8BR4FT0IS7UcukeF0tdjdDyV_uF_b4KOUKEdmgps-hVpsQsjzUUtGRLLR-4aW2ZWA/exec';
+
+        function redirectByRole(userLower, roleUser, namaLengkap) {
+            if (userLower === "admin_pembayaran") {
+                window.location.href = urlAppPembayaran;
+                return true;
+            } else if (userLower === "admin_uks") {
+                window.location.href = urlAppUks;
+                return true;
+            } else if (roleUser === "admin" || userLower === "admin_pusat") {
+                localStorage.setItem("userRole", "admin");
+                localStorage.setItem("namaUser", namaLengkap);
+                window.location.href = "dashboard-admin.html";
+                return true;
+            } else if (roleUser === "walikelas" || roleUser === "wali_kelas") {
+                localStorage.setItem("userRole", "walikelas");
+                localStorage.setItem("namaUser", namaLengkap);
+                window.location.href = "dashboard-wali-kelas.html";
+                return true;
+            } else if (roleUser === "santri" || roleUser === "siswa") {
+                localStorage.setItem("userRole", "santri");
+                localStorage.setItem("namaUser", namaLengkap);
+                window.location.href = "dashboard-santri.html";
+                return true;
+            } else if (roleUser === "guru" || roleUser === "pengajar") {
+                localStorage.setItem("userRole", "guru");
+                localStorage.setItem("namaUser", namaLengkap);
+                window.location.href = "dashboard-guru.html";
+                return true;
+            }
+            return false;
+        }
 
         function handleLogin(event) {
             event.preventDefault();
@@ -121,57 +152,22 @@
                     const roleUser = data.role ? data.role.toLowerCase().trim() : "";
                     const namaLengkap = data.nama || user; // Mengambil nama dari Kolom C Spreadsheet
 
-                    // Pengarahan halaman berdasarkan role atau username khusus
-                    if (userLower === "admin_pembayaran") {
-                        window.location.href = urlAppPembayaran;
-                    } else if (userLower === "admin_uks") {
-                        window.location.href = urlAppUks;
-                    } else if (roleUser === "admin") {
-                        localStorage.setItem("userRole", "admin");
-                        localStorage.setItem("namaUser", namaLengkap);
-                        window.location.href = "dashboard-admin.html";
-                    } else if (roleUser === "walikelas" || roleUser === "wali_kelas") {
-                        localStorage.setItem("userRole", "walikelas");
-                        localStorage.setItem("namaUser", namaLengkap);
-                        window.location.href = "dashboard-wali-kelas.html";
-                    } else if (roleUser === "santri" || roleUser === "siswa") {
-                        localStorage.setItem("userRole", "santri");
-                        localStorage.setItem("namaUser", namaLengkap);
-                        window.location.href = "dashboard-santri.html";
-                    } else if (roleUser === "guru" || roleUser === "guru") {
-                        localStorage.setItem("userRole", "guru");
-                        localStorage.setItem("namaUser", namaLengkap);
-                        window.location.href = "dashboard-guru.html";
-                    } else if (roleUser === "gerbang" || roleUser === "gerbang") {
-                        localStorage.setItem("userRole", "gerbang");
-                        localStorage.setItem("namaUser", namaLengkap);
-                        window.location.href = "dashboard-gerbang.html";
+                    const redirected = redirectByRole(userLower, roleUser, namaLengkap);
+                    if (!redirected) {
+                        errorAlert.innerText = "Role akun tidak dikenali. Hubungi admin.";
+                        errorAlert.classList.remove('d-none');
+                    }
                 } else {
                     errorAlert.innerText = data.message || "Username atau Password salah!";
                     errorAlert.classList.remove('d-none');
                 }
             })
             .catch(error => {
+                console.error("Login error:", error);
                 btnMasuk.innerText = "Masuk";
                 btnMasuk.disabled = false;
-                
-                const userLower = user.toLowerCase();
-                if (userLower === "admin_pembayaran") {
-                    window.location.href = urlAppPembayaran;
-                } else if (userLower === "admin_uks") {
-                    window.location.href = urlAppUks;
-                } else if (userLower === "admin" || userLower === "admin_pusat") {
-                    localStorage.setItem("userRole", "admin");
-                    localStorage.setItem("namaUser", user);
-                    window.location.href = "dashboard-admin.html";
-                } else if (userLower === "guru" || userLower === "guru") {
-                    localStorage.setItem("userRole", "guru");
-                    localStorage.setItem("namaUser", user);
-                    window.location.href = "dashboard-guru.html";
-                } else if (userLower === "gerbang" || userLower === "gerbang") {
-                    localStorage.setItem("userRole", "gerbang");
-                    localStorage.setItem("namaUser", user);
-                    window.location.href = "dashboard-gerbang.html";
+                errorAlert.innerText = "Gagal terhubung ke server. Silakan coba lagi.";
+                errorAlert.classList.remove('d-none');
             });
         }
     </script>
