@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Tunggakan - Pondok Pesantren Darul Amien</title>
+<title>Dashboard Tunggakan - PDF Darul Amien</title>
 <style>
   :root {
     --hijau: #0f766e;
@@ -228,7 +228,7 @@
   // TANPA "?act=tunggakan" (parameter akan ditambahkan otomatis oleh script).
   // Contoh: https://script.google.com/macros/s/AKfycbxxxxxxxxxxxxxxxxxxxx/exec
   // ==========================================================================
-  const URL_WEBAPP = "https://script.google.com/macros/s/AKfycbxL3XmgGvcEUrgPkFx9OMUzGQ9aFhzBB2dXFMrYpgnDsPyXb6Nnj6xBgXKLAjnH1R0E/exec";
+  const URL_WEBAPP = "GANTI_DENGAN_URL_WEBAPP_ANDA/exec";
 
   const LIST_BULAN = [
     "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER",
@@ -266,16 +266,27 @@
   }
 
   // Isi dropdown Kelas berdasarkan data yang benar-benar ada (bukan hardcode)
+  // Digabungkan (dedupe) agar "3" dan "Kelas 3" tidak muncul dobel.
   function isiDropdownKelas(list) {
     const select = document.getElementById('filterKelas');
-    const kelasSet = new Set();
-    list.forEach(s => { if (s.kelas && s.kelas !== '-') kelasSet.add(s.kelas); });
-    const kelasSorted = Array.from(kelasSet).sort((a, b) =>
-      a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
+    const kelasMap = new Map(); // key: versi bersih huruf kecil -> label tampilan
+
+    list.forEach(s => {
+      if (!s.kelas || s.kelas === '-') return;
+      const bersih = String(s.kelas).replace(/^kelas\s+/i, '').trim();
+      const key = bersih.toLowerCase();
+      if (!kelasMap.has(key)) {
+        kelasMap.set(key, bersih); // simpan versi tanpa prefix "Kelas " sebagai label
+      }
+    });
+
+    const kelasSorted = Array.from(kelasMap.entries()).sort((a, b) =>
+      a[1].localeCompare(b[1], undefined, { numeric: true, sensitivity: 'base' })
     );
+
     const nilaiTerpilih = select.value;
     select.innerHTML = '<option value="">Semua Kelas</option>' +
-      kelasSorted.map(k => `<option value="${k}">${k}</option>`).join('');
+      kelasSorted.map(([key, label]) => `<option value="${label}">Kelas ${label}</option>`).join('');
     select.value = nilaiTerpilih || '';
   }
 
