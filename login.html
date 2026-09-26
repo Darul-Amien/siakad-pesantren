@@ -142,7 +142,10 @@
                         localStorage.setItem("userRole", "guru");
                         localStorage.setItem("namaUser", namaLengkap);
                         window.location.href = "dashboard-guru.html";
-                    }
+                    } else {
+                        localStorage.setItem("userRole", "gerbang");
+                        localStorage.setItem("namaUser", namaLengkap);
+                        window.location.href = "dashboard-gerbang.html";
                 } else {
                     errorAlert.innerText = data.message || "Username atau Password salah!";
                     errorAlert.classList.remove('d-none');
@@ -165,7 +168,10 @@
                     localStorage.setItem("userRole", "guru");
                     localStorage.setItem("namaUser", user);
                     window.location.href = "dashboard-guru.html";
-                }
+                } else {
+                    localStorage.setItem("userRole", "gerbang");
+                    localStorage.setItem("namaUser", user);
+                    window.location.href = "dashboard-gerbang.html";
             });
         }
     </script>
