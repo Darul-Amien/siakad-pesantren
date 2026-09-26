@@ -110,6 +110,11 @@
                 localStorage.setItem("namaUser", namaLengkap);
                 window.location.href = "dashboard-guru.html";
                 return true;
+            } else if (roleUser === "gerbang") {
+                localStorage.setItem("userRole", "gerbang");
+                localStorage.setItem("namaUser", namaLengkap);
+                window.location.href = "dashboard-gerbang.html";
+                return true;
             }
             return false;
         }
