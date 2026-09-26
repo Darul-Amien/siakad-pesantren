@@ -1,197 +1,310 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Santri - SIAKAD Darul Amien</title>
-    <!-- Google Fonts Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-        }
-        .navbar-custom {
-            background-color: #198754;
-        }
-        .welcome-card {
-            background: #ffffff;
-            border-left: 5px solid #198754;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-        .badge-pesantren {
-            background-color: #198754;
-            color: white;
-            font-weight: 500;
-            padding: 6px 12px;
-            border-radius: 50px;
-            font-size: 0.75rem;
-        }
-        .content-card {
-            background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border: none;
-            height: 100%;
-            transition: transform 0.2s ease;
-        }
-        .btn-outline-green {
-            color: #198754;
-            border-color: #198754;
-            font-weight: 600;
-            border-radius: 8px;
-            padding: 8px 16px;
-            transition: all 0.2s ease;
-        }
-        .btn-outline-green:hover {
-            background-color: #198754;
-            color: white;
-        }
-    </style>
+  <base target="_top">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+  <style>
+    :root {
+      --primary-green: #065f46;
+      --emerald-accent: #047857;
+      --gold-accent: #d97706;
+      --light-gold: #fef3c7;
+      --bg-islamic: #f0fdf4;
+      --card-shadow: 0 10px 25px -5px rgba(6, 95, 70, 0.08), 0 8px 10px -6px rgba(6, 95, 70, 0.03);
+    }
+
+    body {
+      background-color: var(--bg-islamic);
+      background-image: radial-gradient(#10b981 0.6px, transparent 0.6px), radial-gradient(#10b981 0.6px, #f0fdf4 0.6px);
+      background-size: 24px 24px;
+      background-position: 0 0, 12px 12px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      padding-top: 25px;
+      padding-bottom: 50px;
+      color: #1e293b;
+    }
+
+    .pesantren-header {
+      background: linear-gradient(135deg, #065f46 0%, #047857 60%, #0f766e 100%);
+      border-radius: 20px;
+      padding: 25px 20px;
+      color: #ffffff;
+      text-align: center;
+      box-shadow: 0 12px 28px -5px rgba(6, 95, 70, 0.3);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 25px;
+      border: 2px solid #fef3c7;
+    }
+
+    .pesantren-header::before {
+      content: '﷽';
+      font-family: 'Amiri', serif;
+      position: absolute;
+      top: -10px;
+      right: 15px;
+      font-size: 4rem;
+      opacity: 0.12;
+      color: #ffffff;
+    }
+
+    .pesantren-title {
+      font-weight: 800;
+      font-size: 1.3rem;
+      letter-spacing: -0.3px;
+      margin-bottom: 2px;
+      color: #ffffff;
+    }
+
+    .pesantren-subtitle {
+      font-size: 0.85rem;
+      color: #d1fae5;
+      font-weight: 500;
+    }
+
+    .main-card {
+      background-color: #ffffff;
+      border: 1px solid #d1fae5;
+      border-radius: 20px;
+      box-shadow: var(--card-shadow);
+      padding: 28px;
+    }
+
+    .card-title-custom {
+      font-weight: 700;
+      color: var(--primary-green);
+      font-size: 1.2rem;
+      position: relative;
+      padding-bottom: 10px;
+      margin-bottom: 22px;
+    }
+
+    .card-title-custom::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 45px;
+      height: 4px;
+      background: var(--gold-accent);
+      border-radius: 2px;
+    }
+
+    .profil-santri {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      background-color: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 22px;
+    }
+
+    .total-poin-box {
+      text-align: center;
+      background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+      color: #ffffff;
+      border-radius: 14px;
+      padding: 10px 22px;
+      min-width: 140px;
+    }
+
+    .total-poin-box .angka {
+      font-size: 1.6rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .total-poin-box .label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #d1fae5;
+    }
+
+    .table-custom {
+      border-collapse: separate;
+      border-spacing: 0 6px;
+    }
+
+    .table-custom thead th {
+      border: none;
+      color: var(--primary-green);
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 12px;
+    }
+
+    .table-custom tbody tr {
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      border-radius: 10px;
+    }
+
+    .table-custom td {
+      padding: 14px 12px;
+      border-top: 1px solid #e2e8f0;
+      border-bottom: 1px solid #e2e8f0;
+      vertical-align: middle;
+    }
+
+    .table-custom td:first-child {
+      border-left: 1px solid #e2e8f0;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+
+    .table-custom td:last-child {
+      border-right: 1px solid #e2e8f0;
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
+
+    .jenis-badge {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background-color: var(--light-gold);
+      color: var(--gold-accent);
+      border: 1px solid #fde68a;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Top Navbar -->
-    <nav class="navbar navbar-dark navbar-custom px-4 shadow-sm">
-        <div class="container-fluid">
-            <span class="navbar-brand mb-0 h1 fw-bold">
-                <i class="fas fa-graduation-cap me-2"></i> SIAKAD Darul Amien
-            </span>
-            <div class="d-flex align-items-center">
-                <span class="text-white me-3 small fw-medium" id="navNamaSantri">Halo, Santri</span>
-                <button onclick="logout()" class="btn btn-outline-light btn-sm rounded-pill px-3">
-                    <i class="fas fa-sign-out-alt me-1"></i> Keluar
-                </button>
-            </div>
-        </div>
-    </nav>
+<div class="container" style="max-width: 780px;">
 
-    <!-- Main Content Container -->
-    <div class="container my-5">
+  <div class="pesantren-header">
+    <div class="pesantren-title">Pondok Pesantren Darul Amien</div>
+    <div class="pesantren-subtitle">Rekap Absensi &amp; Poin Ketidakhadiran Santri</div>
+  </div>
 
-        <!-- Welcome Banner -->
-        <div class="welcome-card p-4 mb-4">
-            <span class="badge-pesantren mb-2 d-inline-block">Pondok Pesantren Darul Amien</span>
-            <h2 class="fw-bold text-dark mt-1" id="welcomeMessage">Selamat Datang Santri, Muhammad Ilham</h2>
-            <p class="text-muted mb-0">Portal akademik santri — Silakan pantau nilai, rekap absensi, dan poin kedisiplinan Anda.</p>
-        </div>
+  <div class="main-card">
+    <h5 class="card-title-custom"><i class="bi bi-calendar-check me-2"></i>Rekap Absensi Saya</h5>
 
-        <!-- Daftar Menu / Kartu Santri -->
-        <div class="row g-4">
+    <div id="errorBox"></div>
 
-            <!-- Kartu 1: Nilai Akademik -->
-            <div class="col-md-4">
-                <div class="content-card p-4 d-flex flex-column justify-content-between">
-                    <div>
-                        <h5 class="fw-bold text-success mb-2">
-                            <i class="fas fa-book-open me-2"></i> Nilai Akademik
-                        </h5>
-                        <p class="text-muted small mb-4">Lihat rincian nilai hasil belajar santri secara berkala.</p>
-                    </div>
-                    <div class="d-grid gap-2">
-                        <button onclick="bukaFiturSegera('Nilai Bulanan')" class="btn btn-outline-green btn-sm">Nilai Bulanan</button>
-                        <button onclick="bukaFiturSegera('Nilai UTS')" class="btn btn-outline-green btn-sm">Nilai UTS</button>
-                        <button onclick="bukaFiturSegera('Nilai UAS')" class="btn btn-outline-green btn-sm">Nilai UAS</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Kartu 2: Absensi Kehadiran (Terhubung Otomatis ke Apps Script) -->
-            <div class="col-md-4">
-                <div class="content-card p-4 d-flex flex-column justify-content-between">
-                    <div>
-                        <h5 class="fw-bold text-success mb-2">
-                            <i class="fas fa-calendar-alt me-2"></i> Absensi Kehadiran
-                        </h5>
-                        <p class="text-muted small mb-4">Cek rekapitulasi kehadiran harian di kelas dan kegiatan pesantren.</p>
-                    </div>
-                    <div>
-                        <button onclick="bukaRekapAbsen()" class="btn btn-outline-green w-100">
-                            Lihat Rekap Absen
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Kartu 3: Poin Akademik (Terhubung Otomatis ke Apps Script) -->
-            <div class="col-md-4">
-                <div class="content-card p-4 d-flex flex-column justify-content-between">
-                    <div>
-                        <h5 class="fw-bold text-success mb-2">
-                            <i class="fas fa-award me-2"></i> Poin Akademik
-                        </h5>
-                        <p class="text-muted small mb-4">Pantau akumulasi poin prestasi dan catatan kedisiplinan santri.</p>
-                    </div>
-                    <div>
-                        <button onclick="bukaRekapPoin()" class="btn btn-outline-green w-100">
-                            Lihat Rekap Poin
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
+    <div class="profil-santri" id="profilBox" style="display:none;">
+      <div>
+        <div class="fw-bold fs-5" id="namaDisplay">-</div>
+        <div class="text-muted small">Kelas <span id="kelasDisplay">-</span></div>
+      </div>
+      <div class="total-poin-box">
+        <div class="angka" id="totalPoinDisplay">0</div>
+        <div class="label">Total Poin</div>
+      </div>
     </div>
 
-    <!-- Script JavaScript -->
-    <script>
-        // URL Web App Aplikasi Input Poin Akademik Anda
-        const urlAppPoin = 'https://script.google.com/macros/s/AKfycbwp1t3nZjQHDIKqwXtU0qsT0dVKQZd0YX4RqJti4aTUHCcKXI-dzmypB4WI7jW3ymXR/exec';
-        // URL Web App Rekap Absensi
-        const urlAppAbsen = 'https://script.google.com/macros/s/AKfycbzxBSLKPdeYDwg1N_XCRkdNvj9cKcfe--Yu0akgNAKDYTIMdpipMwMq6Hzb0cHvuZNK/exec';
+    <div class="mb-3">
+      <div class="input-group">
+        <span class="input-group-text bg-white border-end-0 text-success"><i class="bi bi-search"></i></span>
+        <input type="text" id="searchBar" class="form-control border-start-0 ps-0" placeholder="Cari rincian..." onkeyup="renderTable()" disabled>
+      </div>
+    </div>
 
-        window.addEventListener('DOMContentLoaded', (event) => {
-            const namaUser = localStorage.getItem("namaUser");
-            if (namaUser) {
-                document.getElementById('welcomeMessage').innerText = `Selamat Datang Santri, ${namaUser}`;
-                document.getElementById('navNamaSantri').innerText = `Halo, ${namaUser}`;
-            }
-        });
+    <div class="table-responsive">
+      <table class="table table-custom align-middle">
+        <thead>
+          <tr>
+            <th width="15%">Tanggal</th>
+            <th>Rincian</th>
+            <th class="text-center" width="12%">Poin</th>
+            <th>Keterangan</th>
+          </tr>
+        </thead>
+        <tbody id="riwayatBody">
+          <tr><td colspan="4" class="text-center text-muted py-4"><div class="spinner-border spinner-border-sm text-success me-2"></div>Memuat data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-        // Fungsi otomatis membawa parameter nama santri ke aplikasi rekap poin
-        function bukaRekapPoin() {
-            const namaSantri = localStorage.getItem("namaUser") || "";
+</div>
 
-            if (!namaSantri) {
-                alert("Sesi login tidak ditemukan. Silakan login ulang.");
-                window.location.href = "login.html";
-                return;
-            }
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Token & nama disisipkan oleh server (code.gs) saat halaman ini dirender untuk santri.
+  const SERVER_TOKEN = "<?= token ?>";
+  const NAMA_SANTRI = "<?= nama ?>";
 
-            // Membuka Web App poin dengan menyertakan parameter nama santri di URL
-            const targetURL = urlAppPoin + "?nama=" + encodeURIComponent(namaSantri);
-            window.open(targetURL, "_blank");
-        }
+  let riwayatData = [];
 
-        // Fungsi otomatis membawa parameter nama santri ke aplikasi rekap absensi
-        function bukaRekapAbsen() {
-            const namaSantri = localStorage.getItem("namaUser") || "";
+  window.onload = function() {
+    google.script.run
+      .withSuccessHandler(renderData)
+      .withFailureHandler(onError)
+      .getRekapSantriData(SERVER_TOKEN, NAMA_SANTRI);
+  };
 
-            if (!namaSantri) {
-                alert("Sesi login tidak ditemukan. Silakan login ulang.");
-                window.location.href = "login.html";
-                return;
-            }
+  function renderData(res) {
+    if (!res || res.status !== "success") {
+      document.getElementById('errorBox').innerHTML =
+        `<div class="alert alert-danger border-0 shadow-sm rounded-3"><i class="bi bi-exclamation-triangle-fill me-2"></i>${res && res.message ? res.message : 'Gagal memuat data.'}</div>`;
+      document.getElementById('riwayatBody').innerHTML =
+        '<tr><td colspan="4" class="text-center text-muted py-4">Data tidak tersedia.</td></tr>';
+      return;
+    }
 
-            // Membuka Web App absensi dengan menyertakan parameter nama santri di URL
-            const targetURL = urlAppAbsen + "?nama=" + encodeURIComponent(namaSantri);
-            window.open(targetURL, "_blank");
-        }
+    document.getElementById('namaDisplay').innerText = res.nama;
+    document.getElementById('kelasDisplay').innerText = res.kelas;
+    document.getElementById('totalPoinDisplay').innerText = res.totalPoin;
+    document.getElementById('profilBox').style.display = 'flex';
+    document.getElementById('searchBar').disabled = false;
 
-        // Fungsi sementara untuk fitur lain yang sedang disiapkan
-        function bukaFiturSegera(namaFitur) {
-            alert(`Fitur ${namaFitur} sedang dalam tahap pengembangan.`);
-        }
+    riwayatData = res.riwayat || [];
+    renderTable();
+  }
 
-        function logout() {
-            localStorage.clear();
-            window.location.href = "login.html";
-        }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  function renderTable() {
+    const searchVal = document.getElementById('searchBar').value.toLowerCase();
+    const tbody = document.getElementById('riwayatBody');
+    tbody.innerHTML = '';
+
+    const filtered = riwayatData.filter(item =>
+      (item.rincian || '').toLowerCase().includes(searchVal) ||
+      (item.jenis || '').toLowerCase().includes(searchVal)
+    );
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">Belum ada catatan poin.</td></tr>';
+      return;
+    }
+
+    filtered.slice().reverse().forEach(item => {
+      let tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="text-muted small" style="white-space:nowrap;">${item.tanggal}</td>
+        <td>
+          <div class="fw-bold text-dark">${item.rincian}</div>
+          <span class="jenis-badge">${item.jenis}</span>
+        </td>
+        <td class="text-center fw-bold text-danger">+${item.poin}</td>
+        <td><small class="text-muted">${item.keterangan || '-'}</small></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function onError(err) {
+    document.getElementById('errorBox').innerHTML =
+      `<div class="alert alert-danger border-0 shadow-sm rounded-3"><i class="bi bi-exclamation-triangle-fill me-2"></i>Gagal memuat data: ${err.message}</div>`;
+    document.getElementById('riwayatBody').innerHTML =
+      '<tr><td colspan="4" class="text-center text-muted py-4">Terjadi kesalahan.</td></tr>';
+  }
+</script>
+
 </body>
 </html>
