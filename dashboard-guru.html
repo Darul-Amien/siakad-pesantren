@@ -128,6 +128,25 @@
             text-align: center;
             min-width: 60px;
         }
+        /* Menu navigasi khusus HP: bisa digeser ke samping */
+        .mobile-menu {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+        .mobile-menu .menu-scroll {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 10px 16px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .mobile-menu .btn {
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body onload="loadRaportGuru(); loadInfoAkademik();">
@@ -143,6 +162,21 @@
             </button>
         </div>
     </nav>
+
+    <!-- Menu Navigasi Khusus HP (menggantikan sidebar yang disembunyikan di layar kecil) -->
+    <div class="mobile-menu d-md-none shadow-sm">
+        <div class="menu-scroll">
+            <a href="dashboard-guru.html" class="btn btn-success btn-sm rounded-pill px-3">
+                <i class="fas fa-home me-1"></i> Beranda
+            </a>
+            <a href="https://script.google.com/macros/s/AKfycbyrPg0HDG9MGDcFgIwosx9WELezCxWoHqPcI_8f2sOYp5uDK0Eml4cWGr7PH9sX9k9x3g/exec" target="_blank" class="btn btn-outline-success btn-sm rounded-pill px-3">
+                <i class="fas fa-book-open me-1"></i> Menu Nilai
+            </a>
+            <a href="https://script.google.com/macros/s/AKfycbwp1t3nZjQHDIKqwXtU0qsT0dVKQZd0YX4RqJti4aTUHCcKXI-dzmypB4WI7jW3ymXR/exec?token=260891" target="_blank" class="btn btn-outline-success btn-sm rounded-pill px-3">
+                <i class="fas fa-award me-1"></i> Poin Akademik
+            </a>
+        </div>
+    </div>
 
     <!-- Sidebar / Navigasi Samping ala EMIS & SIMPATIKA -->
     <div class="sidebar d-none d-md-block px-3">
@@ -353,7 +387,7 @@
             });
         }
 
-        // Fungsi Diperbarui: Mengambil Data Pengumuman & Kalender via GET (Sesuai doGet di code.gs)
+        // Mengambil Data Pengumuman & Kalender via GET (Sesuai doGet di code.gs)
         function loadInfoAkademik() {
             fetch(scriptURL + "?action=getInfoAkademik")
             .then(res => res.json())
