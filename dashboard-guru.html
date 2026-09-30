@@ -467,11 +467,23 @@
                 if (data.jadwal.length === 0) {
                     cJ.innerHTML = `<p class="text-muted small">Belum ada jadwal mengajar.</p>`;
                 } else {
+                    // Normalisasi ejaan hari (Jum'at, Ahad, dll). Yang tidak dikenali masuk grup "Lainnya"
+                    const normHari = h => {
+                        const s = String(h).toLowerCase().replace(/[^a-z]/g, "");
+                        const peta = { senin:"Senin", selasa:"Selasa", rabu:"Rabu", kamis:"Kamis",
+                                       jumat:"Jumat", sabtu:"Sabtu", ahad:"Minggu", minggu:"Minggu" };
+                        return peta[s] || "Lainnya";
+                    };
+
+                    const grup = {};
+                    data.jadwal.forEach(x => {
+                        const h = normHari(x.hari);
+                        (grup[h] = grup[h] || []).push(x);
+                    });
+
                     let html = "";
-                    urutanHari.forEach(hari => {
-                        const sesi = data.jadwal
-                            .filter(x => x.hari.toLowerCase() === hari.toLowerCase())
-                            .sort((a, b) => awalJam(a.jam) - awalJam(b.jam));
+                    [...urutanHari, "Minggu", "Lainnya"].forEach(hari => {
+                        const sesi = (grup[hari] || []).sort((a, b) => awalJam(a.jam) - awalJam(b.jam));
                         if (sesi.length === 0) return;
 
                         const aktif = hari === hariIni;
@@ -484,7 +496,7 @@
                             <div class="flex-grow-1">
                                 ${sesi.map(s => `
                                     <div class="d-flex justify-content-between align-items-center py-1">
-                                        <span class="fw-semibold text-dark small">${s.mapel} — ${s.kelas}</span>
+                                        <span class="fw-semibold text-dark small">${s.mapel} — ${s.kelas}${hari === "Lainnya" ? ` <em class="text-danger">(hari: "${s.hari}")</em>` : ""}</span>
                                         <span class="badge bg-light text-secondary border">Jam ke-${s.jam}</span>
                                     </div>`).join("")}
                             </div>
