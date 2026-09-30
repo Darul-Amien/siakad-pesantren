@@ -333,7 +333,11 @@
 
     <!-- Script JavaScript -->
     <script>
+        // Script Raport Keaktifan Guru
         const scriptURL = 'https://script.google.com/macros/s/AKfycbzV5ns_zrN5-AgiSyJi8DcgSj6eIlJrKPA5e2ibP0YRXPinMkaT0OffWZ9ciWVKupRk/exec';
+
+        // Script Database SIAKAD (login, pengumuman, kalender, ubah password)
+        const urlDatabase = 'https://script.google.com/macros/s/AKfycbyNt9ru4ZxOTjamBzzTKZkHSr5dMRc6fyTDepgtGIfrsf-7QLOUn-vEIGn46Hf0o7E6/exec';
 
         window.addEventListener('DOMContentLoaded', (event) => {
             const namaUser = localStorage.getItem("namaUser");
@@ -389,7 +393,7 @@
 
         // Mengambil Data Pengumuman & Kalender via GET (Sesuai doGet di code.gs)
         function loadInfoAkademik() {
-            fetch(scriptURL + "?action=getInfoAkademik")
+            fetch(urlDatabase + "?action=getInfoAkademik")
             .then(res => res.json())
             .then(data => {
                 if(data.status === "success") {
@@ -466,7 +470,7 @@
                 newPassword: newPass
             };
 
-            fetch(scriptURL, {
+            fetch(urlDatabase, {
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(payload)
