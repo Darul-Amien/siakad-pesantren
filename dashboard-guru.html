@@ -26,6 +26,9 @@
             font-family: 'Poppins', sans-serif;
             background-color: #f4f6f9;
         }
+        html {
+            scroll-behavior: smooth;
+        }
         /* Gaya Sidebar ala EMIS/SIMPATIKA */
         .sidebar {
             position: fixed;
@@ -147,9 +150,13 @@
             flex-shrink: 0;
             white-space: nowrap;
         }
+        /* Agar judul kartu tidak tertutup menu HP saat lompat ke #jadwal / #classvisit */
+        #jadwal, #classvisit {
+            scroll-margin-top: 70px;
+        }
     </style>
 </head>
-<body onload="loadRaportGuru(); loadInfoAkademik();">
+<body onload="loadRaportGuru(); loadInfoAkademik(); loadJadwal();">
 
     <!-- Top Navbar Mobile / Header -->
     <nav class="navbar navbar-dark navbar-custom px-4 shadow-sm d-md-none">
@@ -168,6 +175,12 @@
         <div class="menu-scroll">
             <a href="dashboard-guru.html" class="btn btn-success btn-sm rounded-pill px-3">
                 <i class="fas fa-home me-1"></i> Beranda
+            </a>
+            <a href="#jadwal" class="btn btn-outline-success btn-sm rounded-pill px-3">
+                <i class="fas fa-calendar-week me-1"></i> Jadwal
+            </a>
+            <a href="#classvisit" class="btn btn-outline-success btn-sm rounded-pill px-3">
+                <i class="fas fa-chalkboard-teacher me-1"></i> Class Visit
             </a>
             <a href="https://script.google.com/macros/s/AKfycbyrPg0HDG9MGDcFgIwosx9WELezCxWoHqPcI_8f2sOYp5uDK0Eml4cWGr7PH9sX9k9x3g/exec" target="_blank" class="btn btn-outline-success btn-sm rounded-pill px-3">
                 <i class="fas fa-book-open me-1"></i> Menu Nilai
@@ -189,6 +202,16 @@
             <li class="nav-item">
                 <a class="nav-link active" href="dashboard-guru.html">
                     <i class="fas fa-home"></i> Beranda Utama
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#jadwal">
+                    <i class="fas fa-calendar-week"></i> Jadwal Mengajar
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#classvisit">
+                    <i class="fas fa-chalkboard-teacher"></i> Jadwal Class Visit
                 </a>
             </li>
             <li class="nav-item">
@@ -269,6 +292,30 @@
                 </div>
             </div>
 
+            <!-- WIDGET BARU: Jadwal Mengajar & Jadwal Class Visit (berbeda untuk tiap guru) -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-7" id="jadwal">
+                    <div class="content-card p-4">
+                        <h5 class="fw-bold text-success mb-3">
+                            <i class="fas fa-calendar-week me-2"></i> Jadwal Mengajar Saya
+                        </h5>
+                        <div id="containerJadwal">
+                            <p class="text-muted small">Memuat jadwal...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5" id="classvisit">
+                    <div class="content-card p-4">
+                        <h5 class="fw-bold text-success mb-3">
+                            <i class="fas fa-chalkboard-teacher me-2"></i> Jadwal Class Visit
+                        </h5>
+                        <div id="containerVisit">
+                            <p class="text-muted small">Memuat jadwal...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- WIDGET 2: Informasi/Pengumuman & Kalender Akademik -->
             <div class="row g-4 mb-4">
                 <!-- Kolom Pengumuman Pesantren -->
@@ -336,7 +383,7 @@
         // Script Raport Keaktifan Guru
         const scriptURL = 'https://script.google.com/macros/s/AKfycbzV5ns_zrN5-AgiSyJi8DcgSj6eIlJrKPA5e2ibP0YRXPinMkaT0OffWZ9ciWVKupRk/exec';
 
-        // Script Database SIAKAD (login, pengumuman, kalender, ubah password)
+        // Script Database SIAKAD (login, pengumuman, kalender, jadwal, ubah password)
         const urlDatabase = 'https://script.google.com/macros/s/AKfycbwLrwImNVhYxMmOg1nzVWlwbhhK4dWAyuaLZYW05pC3OlX0ktrjUn3cC232ZvkA5i6I/exec';
 
         window.addEventListener('DOMContentLoaded', (event) => {
@@ -388,6 +435,82 @@
             .catch(err => {
                 console.error("Gagal memuat raport guru", err);
                 document.getElementById('statusKeaktifan').innerText = "Gagal memuat koneksi";
+            });
+        }
+
+        // Mengambil Jadwal Mengajar & Class Visit milik guru yang sedang login
+        function loadJadwal() {
+            const namaUser = localStorage.getItem("namaUser") || "";
+            const cJ = document.getElementById('containerJadwal');
+            const cV = document.getElementById('containerVisit');
+
+            if (!namaUser || namaUser === "admin" || namaUser === "Administrator") {
+                cJ.innerHTML = cV.innerHTML = `<p class="text-muted small">Akun Admin (Mode Tinjau)</p>`;
+                return;
+            }
+
+            fetch(urlDatabase, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: "getJadwalGuru", namaUser: namaUser })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status !== "success") throw new Error("gagal");
+
+                const urutanHari = ["Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+                const namaHari = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+                const hariIni = namaHari[new Date().getDay()];
+                const awalJam = j => parseInt(String(j)) || 99;
+
+                // ===== Jadwal Mengajar: dikelompokkan per hari =====
+                if (data.jadwal.length === 0) {
+                    cJ.innerHTML = `<p class="text-muted small">Belum ada jadwal mengajar.</p>`;
+                } else {
+                    let html = "";
+                    urutanHari.forEach(hari => {
+                        const sesi = data.jadwal
+                            .filter(x => x.hari.toLowerCase() === hari.toLowerCase())
+                            .sort((a, b) => awalJam(a.jam) - awalJam(b.jam));
+                        if (sesi.length === 0) return;
+
+                        const aktif = hari === hariIni;
+                        html += `
+                        <div class="d-flex mb-3 pb-3 border-bottom">
+                            <div class="calendar-badge me-3 align-self-start" style="min-width:80px; ${aktif ? 'background:#198754;color:#fff;' : ''}">
+                                <small class="d-block fw-bold">${hari}</small>
+                                ${aktif ? '<small style="font-size:0.6rem;">Hari ini</small>' : ''}
+                            </div>
+                            <div class="flex-grow-1">
+                                ${sesi.map(s => `
+                                    <div class="d-flex justify-content-between align-items-center py-1">
+                                        <span class="fw-semibold text-dark small">${s.mapel} — ${s.kelas}</span>
+                                        <span class="badge bg-light text-secondary border">Jam ke-${s.jam}</span>
+                                    </div>`).join("")}
+                            </div>
+                        </div>`;
+                    });
+                    cJ.innerHTML = html;
+                }
+
+                // ===== Class Visit =====
+                if (data.visit.length === 0) {
+                    cV.innerHTML = `<p class="text-muted small">Belum ada jadwal Class Visit.</p>`;
+                } else {
+                    cV.innerHTML = data.visit.map(x => `
+                        <div class="announcement-item border-start border-warning">
+                            <h6 class="fw-bold text-dark mb-1">${x.tanggal}</h6>
+                            <p class="text-muted small mb-1">
+                                ${x.mapel} • Jam ke-${x.jam}<br>
+                                Supervisor 1: ${x.sup1 || "-"}
+                                ${x.sup2 ? `<br>Supervisor 2: ${x.sup2}` : ""}
+                            </p>
+                        </div>`).join("");
+                }
+            })
+            .catch(err => {
+                console.error("Gagal memuat jadwal:", err);
+                cJ.innerHTML = cV.innerHTML = `<p class="text-danger small">Gagal memuat data.</p>`;
             });
         }
 
