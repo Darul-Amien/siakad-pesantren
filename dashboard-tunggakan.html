@@ -36,11 +36,29 @@
   header {
     background: linear-gradient(135deg, var(--hijau), var(--hijau-gelap));
     color: #fff;
-    padding: 28px 16px;
+    padding: 28px 16px 40px;
     text-align: center;
   }
   header h1 { margin: 0 0 4px; font-size: 1.4rem; }
   header p { margin: 0; opacity: .9; font-size: .9rem; }
+
+  .btn-input-pembayaran {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 10px 22px;
+    background: #fff;
+    color: var(--hijau-gelap);
+    font-size: .9rem;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: 999px;
+    box-shadow: 0 3px 10px rgba(0,0,0,.18);
+    transition: transform .15s ease, background .15s ease;
+  }
+  .btn-input-pembayaran:hover {
+    background: #f0fdfa;
+    transform: translateY(-1px);
+  }
 
   .container { max-width: 900px; margin: -20px auto 40px; padding: 0 16px; }
 
@@ -169,6 +187,7 @@
 <header>
   <h1>Info Tunggakan Pembayaran</h1>
   <p>Pondok Pesantren Darul Amien &mdash; data diperbarui otomatis dari sistem keuangan</p>
+  <a href="https://darul-amien.github.io/administrasi/" class="btn-input-pembayaran">💳 Input Pembayaran</a>
 </header>
 
 <div class="container">
@@ -239,9 +258,8 @@
 
 <script>
   // ==========================================================================
-  // GANTI URL DI BAWAH INI dengan URL Web App Google Apps Script Anda,
-  // TANPA "?act=tunggakan" (parameter akan ditambahkan otomatis oleh script).
-  // Contoh: https://script.google.com/macros/s/AKfycbxxxxxxxxxxxxxxxxxxxx/exec
+  // URL Web App Google Apps Script (tanpa "?act=tunggakan",
+  // parameter akan ditambahkan otomatis oleh script).
   // ==========================================================================
   const URL_WEBAPP = "https://script.google.com/macros/s/AKfycbxL3XmgGvcEUrgPkFx9OMUzGQ9aFhzBB2dXFMrYpgnDsPyXb6Nnj6xBgXKLAjnH1R0E/exec";
 
