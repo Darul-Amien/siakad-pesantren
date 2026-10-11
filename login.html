@@ -101,7 +101,7 @@
                 localStorage.setItem("namaUser", namaLengkap);
                 window.location.href = "dashboard-admin.html";
                 return true;
-            } else if (roleUser === "walikelas" || roleUser === "wali_kelas") {
+            } else if (roleUser === "wali_kelas" || roleUser === "wali_kelas") {
                 localStorage.setItem("isLoggedIn", "true"); // <-- Ditambahkan
                 localStorage.setItem("userRole", "walikelas");
                 localStorage.setItem("namaUser", namaLengkap);
@@ -119,7 +119,7 @@
                 localStorage.setItem("namaUser", namaLengkap);
                 window.location.href = "dashboard-guru.html";
                 return true;
-            } else if (roleUser === "adminpembayaran" || roleUser === "admin_pembayaran") {
+            } else if (roleUser === "admin_pembayaran" || roleUser === "admin_pembayaran") {
                 localStorage.setItem("isLoggedIn", "true"); // <-- Ditambahkan
                 localStorage.setItem("userRole", "adminpembayaran");
                 localStorage.setItem("namaUser", namaLengkap);
