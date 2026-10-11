@@ -119,6 +119,12 @@
                 localStorage.setItem("namaUser", namaLengkap);
                 window.location.href = "dashboard-guru.html";
                 return true;
+            } else if (roleUser === "adminpembayaran" || roleUser === "admin_pembayaran") {
+                localStorage.setItem("isLoggedIn", "true"); // <-- Ditambahkan
+                localStorage.setItem("userRole", "adminpembayaran");
+                localStorage.setItem("namaUser", namaLengkap);
+                window.location.href = "dashboard-tunggakan.html";
+                return true;
             } else if (roleUser === "gerbang") {
                 localStorage.setItem("isLoggedIn", "true"); // <-- Ditambahkan
                 localStorage.setItem("userRole", "gerbang");
